@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import CssBaseline from '@material-ui/core/CssBaseline';
-import { createMuiTheme } from '@material-ui/core/styles';
+import { createMuiTheme , MuiThemeProvider} from '@material-ui/core/styles';
 import './App.css';
+import Drawer from './Drawer.js'
 
 const theme = createMuiTheme({
   palette: {
@@ -27,10 +28,10 @@ const theme = createMuiTheme({
 class App extends Component {
   render() {
     return (
-      <React.Fragment>
-      <CssBaseline />
-      {/* The rest of your application */}
-    </React.Fragment>
+      <MuiThemeProvider theme={theme}>
+      <CssBaseline/>
+       <Drawer/>
+    </MuiThemeProvider>
     );
   }
 }
