@@ -18,8 +18,9 @@ import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
 import Grid from '@material-ui/core/Grid';
-
-const Background = React.lazy (() => import ('./SelectedItems/Background'));
+const TextTool = React.lazy (() => import ('./ToolSelection/Text'));
+const FlyerView = React.lazy (() => import ('./FlyerView'));
+const Background = React.lazy (() => import ('./ToolSelection/Background'));
 
 const drawerWidth = 240;
 
@@ -64,8 +65,10 @@ const styles = theme => ({
   },
   customDrawer: {
     flexDirection: 'row',
+    width:"300px"
   },
   toolbar: {
+    
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'flex-end',
@@ -168,8 +171,8 @@ class MiniDrawer extends React.Component {
               ))}
             </List> */}
           </div>
-          <Paper className={classes.contentDrawer}>
-            <div className={classes.toolbar}>
+          <Paper className={classes.contentDrawer} style={{width:"300px"}}>
+            <div className={classes.toolbar} >
               <IconButton onClick={this.handleDrawerClose}>
                 {theme.direction === 'rtl'
                   ? <ChevronRightIcon />
@@ -187,9 +190,10 @@ class MiniDrawer extends React.Component {
                   </ListItem>
                 : ''}
               {this.state.ItemList === 'Starred'
-                ? <ListItem button key={'Background'}>
-                    <ListItemText primary={'Starred'} />
-
+                ? <ListItem button key={'Text'}>
+                    <Suspense fallback={<div>Loading...</div>}>
+                      <TextTool templateChange={this.templateChange} />
+                    </Suspense>
                     {/* <ListItemText primary={"background"} /> */}
                   </ListItem>
                 : ''}
@@ -209,12 +213,9 @@ class MiniDrawer extends React.Component {
           <Grid item xs={6} className={classes.template}>
             {this.state.imgSrc
               ? <div>
-                  <img
-                    id="xy"
-                    style={{width: '100%'}}
-                    src={this.state.imgSrc}
-                    alt={'tile.title'}
-                  />
+                  <Suspense fallback={<div>Loading...</div>}>
+                    <FlyerView imgSrc={this.state.imgSrc} />
+                  </Suspense>
                 </div>
               : <Typography
                   component="h2"
@@ -228,8 +229,6 @@ class MiniDrawer extends React.Component {
                     #${'xz'}:hover {
                       border: ${'2px solid grey'} !important;
                       padding: ${'10px'} !important;
-                      
-
                     }      
                   `}
                   </style>
