@@ -7,7 +7,9 @@ import Drawer from './Drawer.js'
 const theme = createMuiTheme({
   palette: {
     type: 'dark',
+    
   },
+  
   typography: {
     fontSize: 12,
     // Use the system font instead of the default Roboto font.
