@@ -2,30 +2,20 @@ import React, {Suspense} from 'react';
 import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import List from '@material-ui/core/List';
-import CssBaseline from '@material-ui/core/CssBaseline';
+import MiniSideBar from './MiniSideBar.js'
 import Typography from '@material-ui/core/Typography';
-import Divider from '@material-ui/core/Divider';
-import IconButton from '@material-ui/core/IconButton';
-import Paper from '@material-ui/core/Paper';
-import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import Templates from '@material-ui/icons/PhotoLibrary';
-import ListItem from '@material-ui/core/ListItem';
-import ListItemIcon from '@material-ui/core/ListItemIcon';
-import ListItemText from '@material-ui/core/ListItemText';
-import InboxIcon from '@material-ui/icons/MoveToInbox';
-import MailIcon from '@material-ui/icons/Mail';
+import Header from "../Common/Header"
+import Main from './Main.js'
+import Aside from "./Aside.js"
 import Grid from '@material-ui/core/Grid';
-const TextTool = React.lazy (() => import ('../ToolSelection/Text'));
-const FlyerView = React.lazy (() => import ('../FlyerView'));
-const Background = React.lazy (() => import ('../ToolSelection/Background'));
 
-const drawerWidth = 240;
+const FlyerView = React.lazy (() => import ('../FlyerView'));
+
+const drawerWidth = 350;
 const styles = theme => ({
   root: {
     display: 'flex',
+    overflow:"hidden"
   },
   emptyTemp: {
     margin: '20%',
@@ -56,15 +46,12 @@ const styles = theme => ({
     flexShrink: 0,
     whiteSpace: 'nowrap',
   },
-  iconDrawer: {
-    width: theme.spacing.unit * 9 + 1,
-  },
   contentDrawer: {
     width: drawerWidth - theme.spacing.unit * 9 + 1,
   },
   customDrawer: {
     flexDirection: 'row',
-    width:"300px"
+    width: drawerWidth
   },
   toolbar: {
     
@@ -77,6 +64,8 @@ const styles = theme => ({
   content: {
     flexGrow: 1,
     padding: theme.spacing.unit * 3,
+    width: `calc(100% - ${drawerWidth}px)`,
+    paddingTop: "5.5rem"
   },
 });
 
@@ -96,11 +85,12 @@ class MiniDrawer extends React.Component {
   handleDrawerClose = () => {
     this.setState ({open: false});
   };
-  showComponent = text => {
-    this.setState ({ItemList: text});
-  };
+
   templateChange = src => {
     this.setState ({imgSrc: src});
+  };
+  showComponent = text => {
+    this.setState ({ItemList: text});
   };
   componentDidMount () {
     // this.updateCanvas(this.state.imgSrc)
@@ -118,12 +108,7 @@ class MiniDrawer extends React.Component {
 
     return (
       <div className={classes.root}>
-        <CssBaseline />
-        <AppBar position="fixed" className={classes.appBar}>
-          <Toolbar disableGutters={!this.state.open}>
-            <Typography variant="h6" color="inherit" noWrap />
-          </Toolbar>
-        </AppBar>
+        <Header/>
         <Drawer
           variant="permanent"
           className={classes.drawer}
@@ -132,50 +117,11 @@ class MiniDrawer extends React.Component {
           }}
           open={this.state.open}
         >
-          <div className={classes.iconDrawer}>
-          <div className={classes.toolbar}></div>
-            <List>
-              {[
-                'Template',
-                'Starred',
-                'Send email',
-                'Drafts',
-              ].map ((text, index) => (
-                <ListItem button key={text}>
-                  <ListItemIcon>
-                    {index % 2 === 0
-                      ? <Templates onClick={() => this.showComponent (text)} />
-                      : <MailIcon onClick={() => this.showComponent (text)} />}
-                  </ListItemIcon>
-                </ListItem>
-              ))}
-            </List>
-            {/* <List>
-              {["All mail", "Trash", "Spam"].map((text, index) => (
-                <ListItem button key={text}>
-                  <ListItemIcon>
-                    {index % 2 === 0 ? <InboxIcon /> : <MailIcon />}
-                  </ListItemIcon>
-                </ListItem>
-              ))}
-            </List> */}
-          </div>
-          <Paper className={classes.contentDrawer} style={{width:"300px"}}>
-          <div className={classes.toolbar}></div>
-
-              {this.state.ItemList === 'Template'
-                &&  <Suspense fallback={<div>Loading...</div>}>
-                      <Background templateChange={this.templateChange} />
-                    </Suspense>
-                }
-              {this.state.ItemList === 'Starred'
-                &&  <Suspense fallback={<div>Loading...</div>}>
-                      <TextTool templateChange={this.templateChange} />
-                    </Suspense>}
-
-          </Paper>
+          <MiniSideBar showComponent={this.showComponent}/>
+          <Aside templateChange={this.templateChange} ItemList={this.state.ItemList}/>
         </Drawer>
         <main className={classes.content}>
+        <Main selectedBackground={this.state.imgSrc}/>
           <div className={classes.toolbar} />
           <Grid item xs={6} className={classes.template}>
             {this.state.imgSrc

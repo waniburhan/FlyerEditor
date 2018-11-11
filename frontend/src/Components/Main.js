@@ -1,0 +1,136 @@
+import React, { Component } from 'react';
+import { Stage, Layer, Rect, Text, Image } from 'react-konva';
+import ColoredRect from "./Rectangle"
+import Transformer from "./TransformerComponent.js"
+import Backgrounds from "../Common/TemplateData.js"
+
+
+class BackgroundObject extends React.Component {
+    state = {
+        image: null,}
+
+    componentDidMount() {
+        const image = new window.Image();
+        image.src = this.props.src;
+        image.onload = () => {
+          // setState will redraw layer
+          // because "image" property is changed
+          this.setState({
+            image: image
+          });
+        };
+      }
+      componentWillReceiveProps(nextProps){
+        if(nextProps.src != this.props.src){
+            const image = new window.Image();
+            image.src = this.props.src;
+            image.onload = () => {
+              // setState will redraw layer
+              // because "image" property is changed
+              this.setState({
+                image: image
+              });
+            }; 
+        }
+      }
+
+    render() {
+      return (
+        <Image
+          x={this.props.x}
+          y={this.props.y}
+          width={this.props.width}
+          height={this.props.height}
+          fill={this.props.fill}
+          name={this.props.name}
+          draggable
+          image={this.state.image}
+        />
+      );
+    }
+  }
+
+class Main extends Component {
+    state = {
+        image: null,
+        rectangles: [
+            {
+              x: 10,
+              y: 10,
+              width: 400,
+              height: 400,
+              fill: 'black',
+              name: 'rect1'
+            },
+          ],
+          selectedShapeName: ''
+      };
+      componentDidMount() {
+        const image = new window.Image();
+        image.src = 'https://konvajs.github.io/assets/yoda.jpg';
+        image.onload = () => {
+          // setState will redraw layer
+          // because "image" property is changed
+          this.setState({
+            image: image
+          });
+        };
+      }
+
+      handleStageMouseDown = e => {
+        // clicked on stage - cler selection
+        if (e.target === e.target.getStage()) {
+          this.setState({
+            selectedShapeName: ''
+          });
+          return;
+        }
+        // clicked on transformer - do nothing
+        const clickedOnTransformer =
+          e.target.getParent().className === 'Transformer';
+        if (clickedOnTransformer) {
+          return;
+        }
+    
+        // find clicked rect by its name
+        const name = e.target.name();
+        const rect = this.state.rectangles.find(r => r.name === name);
+        if (rect) {
+          this.setState({
+            selectedShapeName: name
+          });
+        } else {
+          this.setState({
+            selectedShapeName: ''
+          });
+        }
+      };
+  render() {
+    return (    
+    <Stage
+        width={window.innerWidth}
+        height={window.innerHeight}
+        onMouseDown={this.handleStageMouseDown}
+      >
+      {/*<Stage width={window.innerWidth} height={window.innerHeight}>
+        <Layer>
+          <Text text="Try click on rect" />
+          <ColoredRect />
+          <Image image={this.state.image}/>
+          <Transformer
+            selectedShapeName={this.state.selectedShapeName}/>
+        </Layer>
+    </Stage>*/}
+        <Layer>
+          {this.state.rectangles.map((rect, i) => (
+            <BackgroundObject key={i} {...rect} src={this.props.selectedBackground} />
+          ))}
+          <Transformer
+            selectedShapeName={this.state.selectedShapeName}
+          />
+        </Layer>
+      </Stage>
+    );
+  }
+}
+export default Main
