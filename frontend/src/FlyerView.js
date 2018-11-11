@@ -1,8 +1,5 @@
 import React, {Suspense} from 'react';
 class FlyerView extends React.Component {
-  constructor (props) {
-    super (props);
-  }
   render () {
     return (
       <img

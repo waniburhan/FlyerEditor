@@ -4,20 +4,22 @@ import { withStyles } from "@material-ui/core/styles";
 import GridList from "@material-ui/core/GridList";
 import GridListTile from "@material-ui/core/GridListTile";
 import GridListTileBar from "@material-ui/core/GridListTileBar";
-import IconButton from "@material-ui/core/IconButton";
 import imgData from "../Common/TemplateData";
+import { ButtonBase } from "@material-ui/core";
 const styles = theme => ({
   root: {
     display: "flex",
     flexWrap: "wrap",
     justifyContent: "space-around",
+    margin: "0.5rem",
     overflow: "hidden",
     backgroundColor: theme.palette.background.paper
   },
   gridList: {
     flexWrap: "nowrap",
     // Promote the list into his own layer on Chrome. This cost memory but helps keeping high FPS.
-    transform: "translateZ(0)"
+    transform: "translateZ(0)",
+    margin: "0.5rem !important"
   },
   title: {
     color: theme.palette.primary.light
@@ -39,20 +41,17 @@ class Background extends React.Component {
       <div className={classes.root}>
           {
             (imgData.map((data, index) => 
-            <GridList key={index} className={classes.gridList} cols={2.5}>
-
+            <GridList key={index} className={classes.gridList} cols={1} component={ButtonBase}>
               <GridListTile
                 key={index}
-                style={{ width: "100%", marginTop: "7%" }}
+                onClick={() => this.props.templateChange(data.src)}
               >
-                <IconButton onClick={() => this.props.templateChange(data.src)}>
                   <img
                     style={{ width: "100%" }}
                     src={data.src}
                     alt={data.title}
                   />
-                </IconButton>
-                <GridListTileBar
+                  <GridListTileBar
                   title={data.title}
                   classes={{
                     root: classes.titleBar,
@@ -63,7 +62,7 @@ class Background extends React.Component {
               </GridList>
 
             ))
-          }{" "}
+          }
 
       
       </div>

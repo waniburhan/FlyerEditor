@@ -11,19 +11,18 @@ import Divider from '@material-ui/core/Divider';
 import IconButton from '@material-ui/core/IconButton';
 import Paper from '@material-ui/core/Paper';
 import ChevronLeftIcon from '@material-ui/icons/ChevronLeft';
-import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import Templates from '@material-ui/icons/PhotoLibrary';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
 import Grid from '@material-ui/core/Grid';
-const TextTool = React.lazy (() => import ('./ToolSelection/Text'));
-const FlyerView = React.lazy (() => import ('./FlyerView'));
-const Background = React.lazy (() => import ('./ToolSelection/Background'));
+const TextTool = React.lazy (() => import ('../ToolSelection/Text'));
+const FlyerView = React.lazy (() => import ('../FlyerView'));
+const Background = React.lazy (() => import ('../ToolSelection/Background'));
 
 const drawerWidth = 240;
-
 const styles = theme => ({
   root: {
     display: 'flex',
@@ -81,11 +80,9 @@ const styles = theme => ({
   },
 });
 
-class MiniDrawer extends React.Component {
-  constructor (props) {
-    super (props);
-  }
 
+
+class MiniDrawer extends React.Component {
   state = {
     open: false,
     ItemList: 'Template',
@@ -117,7 +114,7 @@ class MiniDrawer extends React.Component {
     }
   };
   render () {
-    const {classes, theme} = this.props;
+    const {classes} = this.props;
 
     return (
       <div className={classes.root}>
@@ -136,14 +133,7 @@ class MiniDrawer extends React.Component {
           open={this.state.open}
         >
           <div className={classes.iconDrawer}>
-            <div className={classes.toolbar}>
-              <IconButton onClick={this.handleDrawerClose}>
-                {theme.direction === 'rtl'
-                  ? <ChevronRightIcon />
-                  : <ChevronLeftIcon />}
-              </IconButton>
-            </div>
-            <Divider />
+          <div className={classes.toolbar}></div>
             <List>
               {[
                 'Template',
@@ -154,13 +144,12 @@ class MiniDrawer extends React.Component {
                 <ListItem button key={text}>
                   <ListItemIcon>
                     {index % 2 === 0
-                      ? <InboxIcon onClick={() => this.showComponent (text)} />
+                      ? <Templates onClick={() => this.showComponent (text)} />
                       : <MailIcon onClick={() => this.showComponent (text)} />}
                   </ListItemIcon>
                 </ListItem>
               ))}
             </List>
-            <Divider />
             {/* <List>
               {["All mail", "Trash", "Spam"].map((text, index) => (
                 <ListItem button key={text}>
@@ -172,40 +161,18 @@ class MiniDrawer extends React.Component {
             </List> */}
           </div>
           <Paper className={classes.contentDrawer} style={{width:"300px"}}>
-            <div className={classes.toolbar} >
-              <IconButton onClick={this.handleDrawerClose}>
-                {theme.direction === 'rtl'
-                  ? <ChevronRightIcon />
-                  : <ChevronLeftIcon />}
-              </IconButton>
-            </div>
-            <Divider />
-            <List>
+          <div className={classes.toolbar}></div>
+
               {this.state.ItemList === 'Template'
-                ? <ListItem button key={'Background'}>
-                    {/* <ListItemText primary={"background"} /> */}
-                    <Suspense fallback={<div>Loading...</div>}>
+                &&  <Suspense fallback={<div>Loading...</div>}>
                       <Background templateChange={this.templateChange} />
                     </Suspense>
-                  </ListItem>
-                : ''}
+                }
               {this.state.ItemList === 'Starred'
-                ? <ListItem button key={'Text'}>
-                    <Suspense fallback={<div>Loading...</div>}>
+                &&  <Suspense fallback={<div>Loading...</div>}>
                       <TextTool templateChange={this.templateChange} />
-                    </Suspense>
-                    {/* <ListItemText primary={"background"} /> */}
-                  </ListItem>
-                : ''}
-            </List>
-            <Divider />
-            {/* <List>
-              {["All mail", "Trash", "Spam"].map((text, index) => (
-                <ListItem button key={text}>
-                  <ListItemText primary={text} />
-                </ListItem>
-              ))}
-            </List> */}
+                    </Suspense>}
+
           </Paper>
         </Drawer>
         <main className={classes.content}>
@@ -251,7 +218,6 @@ class MiniDrawer extends React.Component {
 
 MiniDrawer.propTypes = {
   classes: PropTypes.object.isRequired,
-  theme: PropTypes.object.isRequired,
 };
 
-export default withStyles (styles, {withTheme: true}) (MiniDrawer);
+export default withStyles(styles)(MiniDrawer);
