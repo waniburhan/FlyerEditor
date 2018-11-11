@@ -18,6 +18,7 @@ import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
 import Grid from '@material-ui/core/Grid';
+import html2canvas from 'html2canvas';
 const TextTool = React.lazy (() => import ('./ToolSelection/Text'));
 const FlyerView = React.lazy (() => import ('./FlyerView'));
 const Background = React.lazy (() => import ('./ToolSelection/Background'));
@@ -65,10 +66,9 @@ const styles = theme => ({
   },
   customDrawer: {
     flexDirection: 'row',
-    width:"300px"
+    width: '300px',
   },
   toolbar: {
-    
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'flex-end',
@@ -108,6 +108,31 @@ class MiniDrawer extends React.Component {
   componentDidMount () {
     // this.updateCanvas(this.state.imgSrc)
   }
+
+  PrintDiv = div => {
+    html2canvas (div, {
+      onrendered: function (canvas) {
+        var myImage = canvas.toDataURL ();
+        this.downloadURI (myImage, 'MaSimulation.png');
+      },
+    });
+    console.log ('hellooi');
+    html2canvas (document.querySelector (div)).then (canvas => {
+      document.body.appendChild (canvas);
+    });
+  };
+
+  downloadURI = (uri, name) => {
+    var link = document.createElement ('a');
+
+    link.download = name;
+    link.href = uri;
+    document.body.appendChild (link);
+    link.click ();
+    //after creating link you should delete dynamic link
+    //clearDynamicLink(link);
+  };
+
   updateCanvas = src => {
     console.log (src, 'src');
     if (this.state.imgSrc) {
@@ -171,8 +196,8 @@ class MiniDrawer extends React.Component {
               ))}
             </List> */}
           </div>
-          <Paper className={classes.contentDrawer} style={{width:"300px"}}>
-            <div className={classes.toolbar} >
+          <Paper className={classes.contentDrawer} style={{width: '300px'}}>
+            <div className={classes.toolbar}>
               <IconButton onClick={this.handleDrawerClose}>
                 {theme.direction === 'rtl'
                   ? <ChevronRightIcon />
@@ -185,8 +210,11 @@ class MiniDrawer extends React.Component {
                 ? <ListItem button key={'Background'}>
                     {/* <ListItemText primary={"background"} /> */}
                     <Suspense fallback={<div>Loading...</div>}>
-                      <Background templateChange={this.templateChange} />
+                      <div id="imgdiv">
+                        {' '}<Background templateChange={this.templateChange} />
+                      </div>
                     </Suspense>
+                    {/* <MailIcon onClick={() => this.PrintDiv("#imgdiv")} /> */}
                   </ListItem>
                 : ''}
               {this.state.ItemList === 'Starred'
