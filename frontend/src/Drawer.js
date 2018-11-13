@@ -103,7 +103,10 @@ class MiniDrawer extends React.Component {
     this.setState ({ItemList: text});
   };
   templateChange = src => {
-    this.setState ({imgSrc: src});
+
+    this.setState ({imgSrc: srcx});
+    console.log (this.state,'hellooi');
+
   };
   componentDidMount () {
     // this.updateCanvas(this.state.imgSrc)
@@ -116,7 +119,6 @@ class MiniDrawer extends React.Component {
         this.downloadURI (myImage, 'MaSimulation.png');
       },
     });
-    console.log ('hellooi');
     html2canvas (document.querySelector (div)).then (canvas => {
       document.body.appendChild (canvas);
     });
