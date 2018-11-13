@@ -51,7 +51,8 @@ const styles = theme => ({
   },
   customDrawer: {
     flexDirection: 'row',
-    width: drawerWidth
+    width: drawerWidth,
+    border: "none"
   },
   toolbar: {
     
@@ -91,17 +92,6 @@ class MiniDrawer extends React.Component {
   };
   showComponent = text => {
     this.setState ({ItemList: text});
-  };
-  componentDidMount () {
-    // this.updateCanvas(this.state.imgSrc)
-  }
-  updateCanvas = src => {
-    console.log (src, 'src');
-    if (this.state.imgSrc) {
-      const ctx = this.refs.canvas.getContext ('2d');
-      var img = <img src={src} />;
-      ctx.drawImage (img, 10, 10);
-    }
   };
   render () {
     const {classes} = this.props;

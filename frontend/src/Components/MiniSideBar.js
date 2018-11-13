@@ -10,6 +10,8 @@ import TextFormat from '@material-ui/icons/TextFields';
 const styles = theme => ({
     iconDrawer: {
         width: theme.spacing.unit * 9 + 1,
+        position: "fixed",
+        height:"100%"
       },
       toolbar: {    
         display: 'flex',

@@ -21,15 +21,18 @@ class BackgroundObject extends React.Component {
         };
       }
       componentWillReceiveProps(nextProps){
+          
         if(nextProps.src != this.props.src){
             const image = new window.Image();
             image.src = this.props.src;
+            console.log(this.props.src)
             image.onload = () => {
               // setState will redraw layer
               // because "image" property is changed
               this.setState({
                 image: image
               });
+
             }; 
         }
       }
@@ -65,17 +68,6 @@ class Main extends Component {
           ],
           selectedShapeName: ''
       };
-      componentDidMount() {
-        const image = new window.Image();
-        image.src = 'https://konvajs.github.io/assets/yoda.jpg';
-        image.onload = () => {
-          // setState will redraw layer
-          // because "image" property is changed
-          this.setState({
-            image: image
-          });
-        };
-      }
 
       handleStageMouseDown = e => {
         // clicked on stage - cler selection
