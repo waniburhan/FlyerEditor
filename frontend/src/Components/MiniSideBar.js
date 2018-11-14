@@ -10,6 +10,8 @@ import TextFormat from '@material-ui/icons/TextFields';
 const styles = theme => ({
     iconDrawer: {
         width: theme.spacing.unit * 9 + 1,
+        position: "fixed",
+        height:"100%"
       },
       toolbar: {    
         display: 'flex',
@@ -20,6 +22,10 @@ const styles = theme => ({
       },
       listItem:{
           flexDirection:"column"
+      },
+      listItemSelected:{
+        backgroundColor:"#393939 !important",
+        flexDirection:"column"
       },
       icon:{
           margin: 0,
@@ -32,21 +38,22 @@ class MiniSideBar extends Component {
         this.state = {  };
     }
     render() {
+        console.log(this.props.ItemList,"xyz")
         const {classes} = this.props;
         return (
             <div className={classes.iconDrawer}>
             <div className={classes.toolbar}></div>
               <List>
-                  <ListItem button className={classes.listItem}>
+                  <ListItem button className={this.props.ItemList === "Template"?classes.listItemSelected:classes.listItem} onClick={() => this.props.showComponent("Template")}>
                     <ListItemIcon className={classes.icon}>
-                     <Templates onClick={() => this.props.showComponent("Template")} />
-                    </ListItemIcon>
+                     <Templates  />
+                    </ListItemIcon><br/>
                     <ListItemText primary="Template" />
                   </ListItem>
-                  <ListItem button className={classes.listItem}>
-                    <ListItemIcon className={classes.icon}>
-                    <TextFormat onClick={() => this.props.showComponent("Format")} />
-                    </ListItemIcon>
+                  <ListItem button className={this.props.ItemList === "Format"?classes.listItemSelected:classes.listItem} onClick={() => this.props.showComponent("Format")}>
+                    <ListItemIcon className={classes.icon} >
+                    <TextFormat  />
+                    </ListItemIcon><br/>
                     <ListItemText primary="Format"/>
                   </ListItem>
                   

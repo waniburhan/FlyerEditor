@@ -45,6 +45,7 @@ const styles = theme => ({
     width: drawerWidth,
     flexShrink: 0,
     whiteSpace: 'nowrap',
+   
   },
   contentDrawer: {
     width: drawerWidth - theme.spacing.unit * 9 + 1,
@@ -52,8 +53,10 @@ const styles = theme => ({
   customDrawer: {
     flexDirection: 'row',
     width: drawerWidth,
+    border: "none"
   },
   toolbar: {
+    minHeight:"56px !important",
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'flex-end',
@@ -91,17 +94,6 @@ class MiniDrawer extends React.Component {
   showComponent = text => {
     this.setState ({ItemList: text});
   };
-  componentDidMount () {
-    // this.updateCanvas(this.state.imgSrc)
-  }
-  updateCanvas = src => {
-    console.log (src, 'src');
-    if (this.state.imgSrc) {
-      const ctx = this.refs.canvas.getContext ('2d');
-      var img = <img src={src} />;
-      ctx.drawImage (img, 10, 10);
-    }
-  };
   render () {
     const {classes} = this.props;
 
@@ -116,7 +108,7 @@ class MiniDrawer extends React.Component {
           }}
           open={this.state.open}
         >
-          <MiniSideBar showComponent={this.showComponent} />
+          <MiniSideBar ItemList={this.state.ItemList} showComponent={this.showComponent} />
           <Aside
             templateChange={this.templateChange}
             ItemList={this.state.ItemList}

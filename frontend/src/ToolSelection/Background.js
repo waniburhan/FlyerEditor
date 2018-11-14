@@ -11,15 +11,14 @@ const styles = theme => ({
     display: "flex",
     flexWrap: "wrap",
     justifyContent: "space-around",
-    margin: "0.5rem",
     overflow: "hidden",
-    backgroundColor: theme.palette.background.paper
+    // backgroundColor:"rgba(0,0,0,0.12)"
   },
   gridList: {
     flexWrap: "nowrap",
     // Promote the list into his own layer on Chrome. This cost memory but helps keeping high FPS.
-    transform: "translateZ(0)",
-    margin: "0.5rem !important"
+    transform: "scale(0.7)",
+
   },
   title: {
     color: theme.palette.primary.light

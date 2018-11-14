@@ -8,7 +8,8 @@ const Background = React.lazy (() => import ('../ToolSelection/Background'));
 const styles = theme => ({
   contentDrawer: {
     width: "100%",
-    padding: "1rem"
+    marginLeft: theme.spacing.unit * 9 + 1,
+    backgroundColor:"rgba(0,0,0,0.12)"
   },
 
   toolbar: {
