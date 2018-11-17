@@ -2,20 +2,23 @@ import React, {Suspense} from 'react';
 import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
-import Button from '@material-ui/core/Button';
+import IconButton from '@material-ui/core/IconButton';
 import MiniSideBar from './MiniSideBar.js';
 import Typography from '@material-ui/core/Typography';
 import Header from '../Common/Header';
 import Main from './Main.js';
 import Aside from './Aside.js';
 import Grid from '@material-ui/core/Grid';
+import ZoomIn from '@material-ui/icons/ZoomIn';
+import ZoomOut from '@material-ui/icons/ZoomOut';
 
 const FlyerView = React.lazy (() => import ('../FlyerView'));
 
 const drawerWidth = 350;
 const styles = theme => ({
   root: {
-    display: 'flex'
+    display: 'flex',
+    overflow: 'hidden',
   },
   emptyTemp: {
     margin: '20%',
@@ -29,10 +32,6 @@ const styles = theme => ({
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
-  },
-  template: {
-    marginLeft: '24%',
-    marginRight: '10%',
   },
   menuButton: {
     marginLeft: 12,
@@ -71,6 +70,14 @@ const styles = theme => ({
   },
   stageParent:{
     width: "100%"
+  },
+  fixedBottom:{
+    position: "fixed",
+    bottom: 0,
+    right: 0,
+    width: "auto",
+    backgroundColor: theme.palette.background.paper,
+    zIndex: 9999
   }
 });
 
@@ -79,7 +86,7 @@ class MiniDrawer extends React.Component {
     open: false,
     ItemList: 'Template',
     imgSrc: '',
-    zoom: 1,
+    zoomDelta: 0,
   };
 
   handleDrawerOpen = () => {
@@ -97,11 +104,11 @@ class MiniDrawer extends React.Component {
     this.setState ({ItemList: text});
   };
   zoomIn = ()=>{
-    this.setState(prevState=>({zoom:prevState.zoom+0.1}))
+    this.setState({zoomDelta:0.1})
   }
   
   zoomOut = ()=>{
-    this.setState(prevState=>({zoom:prevState.zoom-0.1}))
+    this.setState({zoomDelta:-0.1})
   }
   render () {
     const {classes} = this.props;
@@ -124,46 +131,13 @@ class MiniDrawer extends React.Component {
           />
         </Drawer>
         <main className={classes.content}>
-          <div id="stage-parent" className={classes.stageParent}>
           {this.state.imgSrc
-            ? <Main selectedBackground={this.state.imgSrc} zoom={this.state.zoom}/>
+            ? <Main selectedBackground={this.state.imgSrc} zoom={this.state.zoomDelta}/>
             : ''}
-          </div>
-          <Grid item xs={6} className={classes.template}>
-            {this.state.imgSrc
-              ? <div>
-                  <Suspense fallback={<div>Loading...</div>}>
-                    <FlyerView imgSrc={this.state.imgSrc} />
-                  </Suspense>
-                </div>
-              : <Typography
-                  component="h2"
-                  variant="display2"
-                  gutterBottom
-                  className={classes.emptyTemp}
-                  active={classes.emp}
-                >
-                  <style>
-                    {`
-                    #${'xz'}:hover {
-                      border: ${'2px solid grey'} !important;
-                      padding: ${'10px'} !important;
-                    }      
-                  `}
-                  </style>
-                  <div id="xz"> Please Select A Template </div>
-                </Typography>}
-                <Button  onClick={this.zoomOut}>-</Button>
-                <Button  onClick={this.zoomIn}>+</Button>
-            {/* <canvas
-              ref="canvas"
-              width="200"
-              height="100"
-              style={{ border: "1px solid #d3d3d3" }}
-            >
-              Your browser does not support the HTML5 canvas tag.
-            </canvas> */}
-          </Grid>
+          <Grid container className={classes.fixedBottom}>
+                <IconButton size="small" color="" onClick={this.zoomOut}><ZoomOut/></IconButton>
+                <IconButton size="small"  onClick={this.zoomIn}><ZoomIn/></IconButton>
+          </Grid>  
         </main>
       </div>
     );

@@ -55,7 +55,8 @@ class BackgroundObject extends React.Component {
 class Main extends Component {
   state = {
     image: null,
-    zoom: 0,
+    scale: {x:1,y:1},
+    position: {x:0,y:0},
     rectangles: [
       {
         fill: 'black',
@@ -71,6 +72,9 @@ class Main extends Component {
     selectedShapeName: '',
   };
 
+  componentWillReceiveProps(nextProps){
+    this.setState((prevState)=>({scale:{x:prevState.scale.x+nextProps.zoom,y:prevState.scale.y+nextProps.zoom}}))
+  }
   // handleStageMouseDown = e => {
   //   // clicked on stage - cler selection
   //   if (e.target === e.target.getStage ()) {
@@ -100,21 +104,33 @@ class Main extends Component {
   //     });
   //   }
   // };
+  handleWheelZoom=(e)=>{
+    e.evt.preventDefault();
+    var stage = this.node.getStage().attrs;
+    var scaleBy = 1.01;
+    var oldScale = stage.scaleX;
+
+    var mousePointTo = {
+        x: (e.evt.x-398) / oldScale - stage.x / oldScale,
+        y: (e.evt.y-112 )/ oldScale - stage.y / oldScale,
+    };
+
+    var newScale = e.evt.deltaY > 0 ? oldScale * scaleBy : oldScale / scaleBy;
+    this.setState({scale:{ x: newScale, y: newScale }})
+
+    var newPos = {
+        x: -(mousePointTo.x - (e.evt.x-398) / newScale) * newScale,
+        y: -(mousePointTo.y - (e.evt.y - 112) / newScale) * newScale
+    };
+    this.setState({position:newPos})
+
+  }
   render () {
-    let zoomDimension = this.props.zoom>1?this.props.zoom:1
-    let stageWidth = (window.innerWidth - 350) * zoomDimension
-    let stageHeight= (window.innerHeight - 64) * zoomDimension
+
+    let stageWidth = (window.innerWidth - 398) 
+    let stageHeight= (window.innerHeight - 112)
     return (
-      <Stage width={stageWidth} height={stageHeight}  onMouseDown={this.handleStageMouseDown}  className='container' scaleX={this.props.zoom} scaleY={this.props.zoom}>
-        {/*<Stage width={window.innerWidth} height={window.innerHeight}>
-        <Layer>
-          <Text text="Try click on rect" />
-          <ColoredRect />
-          <Image image={this.state.image}/>
-          <Transformer
-            selectedShapeName={this.state.selectedShapeName}/>
-        </Layer>
-    </Stage>*/}
+      <Stage width={stageWidth} height={stageHeight} x={this.state.position.x} y={this.state.position.y} onMouseDown={this.handleStageMouseDown}  className='container' scaleX={this.state.scale.x} scaleY={this.state.scale.y} ref={(node)=>this.node=node} onWheel={this.handleWheelZoom} draggable>
         <Layer>
           {this.state.rectangles.map ((rect, i) => (
             <BackgroundObject

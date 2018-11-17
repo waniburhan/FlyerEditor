@@ -42,10 +42,7 @@ const styles = theme => ({
       duration: theme.transitions.duration.leavingScreen,
     }),
   },
-  template: {
-    marginLeft: '24%',
-    marginRight: '10%',
-  },
+
   menuButton: {
     marginLeft: 12,
     marginRight: 36,
