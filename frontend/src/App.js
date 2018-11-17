@@ -4,7 +4,7 @@ import { createMuiTheme , MuiThemeProvider} from '@material-ui/core/styles';
 import './App.css';
 import HomePage from './Components/Drawer.js'
 import Main from './Components/Main.js'
-
+import MyProvider from './Store/Provider'
 const theme = createMuiTheme({
   palette: {
     type: 'dark',
@@ -31,10 +31,12 @@ const theme = createMuiTheme({
 class App extends Component {
   render() {
     return (
+      <MyProvider>
       <MuiThemeProvider theme={theme}>
       <CssBaseline/>
        <HomePage/>
     </MuiThemeProvider>
+    </MyProvider>
     );
   }
 }
