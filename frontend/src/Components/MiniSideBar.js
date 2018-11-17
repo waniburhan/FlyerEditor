@@ -24,11 +24,14 @@ const styles = theme => ({
           flexDirection:"column"
       },
       listItemSelected:{
-        backgroundColor:"#393939 !important",
+        backgroundColor:"rgba(0,0,0,0.12) !important",
         flexDirection:"column"
       },
       icon:{
           margin: 0,
+      },
+      list:{
+      padding: 0,
       }
 })
 
@@ -43,7 +46,7 @@ class MiniSideBar extends Component {
         return (
             <div className={classes.iconDrawer}>
             <div className={classes.toolbar}></div>
-              <List>
+              <List className={classes.list}>
                   <ListItem button className={this.props.ItemList === "Template"?classes.listItemSelected:classes.listItem} onClick={() => this.props.showComponent("Template")}>
                     <ListItemIcon className={classes.icon}>
                      <Templates  />

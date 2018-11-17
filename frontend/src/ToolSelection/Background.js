@@ -17,11 +17,12 @@ const styles = theme => ({
   gridList: {
     flexWrap: "nowrap",
     // Promote the list into his own layer on Chrome. This cost memory but helps keeping high FPS.
-    transform: "scale(0.7)",
+    paddingBottom:"1rem",
+    width: "100%"
 
   },
   title: {
-    color: theme.palette.primary.light
+    color: theme.palette.primary.textContrast
   },
   titleBar: {
     background:

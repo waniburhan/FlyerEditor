@@ -7,9 +7,13 @@ const Background = React.lazy (() => import ('../ToolSelection/Background'));
 
 const styles = theme => ({
   contentDrawer: {
-    width: "100%",
+    width: "calc(100% - 73px)",
     marginLeft: theme.spacing.unit * 9 + 1,
-    backgroundColor:"rgba(0,0,0,0.12)"
+  },
+  container:{
+    backgroundColor:"rgba(0,0,0,0.12)",
+    padding: "1rem 2rem",
+    minHeight:"100%"
   },
 
   toolbar: {
@@ -27,7 +31,8 @@ class Aside  extends Component {
         const {classes} = this.props
         console.log(this.props.ItemList)
         return (
-            <Paper className={classes.contentDrawer} elevation={false}>
+            <Paper className={classes.contentDrawer} elevation={0}>
+             <div className={classes.container}>
             <div className={classes.toolbar}></div>
   
                 {this.props.ItemList === 'Template'
@@ -39,7 +44,7 @@ class Aside  extends Component {
                   &&  <Suspense fallback={<div>Loading...</div>}>
                         <TextTool templateChange={this.props.templateChange} />
                       </Suspense>}
-  
+            </div> 
             </Paper>
         );
     }

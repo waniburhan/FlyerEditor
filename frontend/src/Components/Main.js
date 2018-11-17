@@ -7,6 +7,8 @@ import Backgrounds from '../Common/TemplateData.js';
 class BackgroundObject extends React.Component {
   state = {
     image: null,
+    width: "",
+    height: ""
   };
 
   componentDidMount () {
@@ -15,6 +17,7 @@ class BackgroundObject extends React.Component {
     image.onload = () => {
       // setState will redraw layer
       // because "image" property is changed
+      this.setState({width: image.width,height:image.height})
       this.setState ({
         image: image,
       });
@@ -26,6 +29,7 @@ class BackgroundObject extends React.Component {
     image.onload = () => {
       // setState will redraw layer
       // because "image" property is changed
+      this.setState({width: image.width,height:image.height})
       this.setState ({
         image: image,
       });
@@ -33,15 +37,15 @@ class BackgroundObject extends React.Component {
   }
 
   render () {
+    let aspectRatio = this.state.width/this.state.height
     return (
       <Image
-        x={this.props.x}
-        y={this.props.y}
-        width={this.props.width}
-        height={this.props.height}
+        x={this.props.stageWidth/2 - (this.props.stageHeight * aspectRatio)/2}
+        y={this.props.stageHeight - this.props.stageHeight}
+        width = {this.props.stageHeight * aspectRatio}
+        height = {this.props.stageHeight}
         fill={this.props.fill}
         name={this.props.name}
-        draggable
         image={this.state.image}
       />
     );
@@ -51,12 +55,9 @@ class BackgroundObject extends React.Component {
 class Main extends Component {
   state = {
     image: null,
+    zoom: 0,
     rectangles: [
       {
-        x: 10,
-        y: 10,
-        width: 721,
-        height: 1081,
         fill: 'black',
         name: 'rect1',
       },
@@ -70,41 +71,41 @@ class Main extends Component {
     selectedShapeName: '',
   };
 
-  handleStageMouseDown = e => {
-    // clicked on stage - cler selection
-    if (e.target === e.target.getStage ()) {
-      this.setState ({
-        selectedShapeName: '',
-      });
-      return;
-    }
-    // clicked on transformer - do nothing
-    const clickedOnTransformer =
-      e.target.getParent ().className === 'Transformer';
-    if (clickedOnTransformer) {
-      return;
-    }
+  // handleStageMouseDown = e => {
+  //   // clicked on stage - cler selection
+  //   if (e.target === e.target.getStage ()) {
+  //     this.setState ({
+  //       selectedShapeName: '',
+  //     });
+  //     return;
+  //   }
+  //   // clicked on transformer - do nothing
+  //   const clickedOnTransformer =
+  //     e.target.getParent ().className === 'Transformer';
+  //   if (clickedOnTransformer) {
+  //     return;
+  //   }
 
-    // find clicked rect by its name
-    console.log("poo",e.target.name ())
-    const name = e.target.name ();
-    const rect = this.state.rectangles.find (r => r.name === name);
-    if (rect) {
-      this.setState ({
-        selectedShapeName: name,
-      });
-    } else {
-      this.setState ({
-        selectedShapeName: '',
-      });
-    }
-  };
+  //   // find clicked rect by its name
+  //   console.log("poo",e.target.name ())
+  //   const name = e.target.name ();
+  //   const rect = this.state.rectangles.find (r => r.name === name);
+  //   if (rect) {
+  //     this.setState ({
+  //       selectedShapeName: name,
+  //     });
+  //   } else {
+  //     this.setState ({
+  //       selectedShapeName: '',
+  //     });
+  //   }
+  // };
   render () {
-    console.log (this.state, 'hellooi');
-
+    let zoomDimension = this.props.zoom>1?this.props.zoom:1
+    let stageWidth = (window.innerWidth - 350) * zoomDimension
+    let stageHeight= (window.innerHeight - 64) * zoomDimension
     return (
-      <Stage width={window.innerWidth} height={window.innerHeight}  onMouseDown={this.handleStageMouseDown}
-      >
+      <Stage width={stageWidth} height={stageHeight}  onMouseDown={this.handleStageMouseDown}  className='container' scaleX={this.props.zoom} scaleY={this.props.zoom}>
         {/*<Stage width={window.innerWidth} height={window.innerHeight}>
         <Layer>
           <Text text="Try click on rect" />
@@ -117,6 +118,8 @@ class Main extends Component {
         <Layer>
           {this.state.rectangles.map ((rect, i) => (
             <BackgroundObject
+              stageWidth={stageWidth}
+              stageHeight={stageHeight}
               key={i}
               {...rect}
               src={this.props.selectedBackground}
@@ -125,15 +128,6 @@ class Main extends Component {
           <Transformer selectedShapeName={this.state.selectedShapeName} />
 
           <Text
-            color="white"
-            {...this.state.text}
-            onClick={() => console.log ('yooo')}
-            draggable
-            text="Try click on rect"
-          />
-        </Layer>
-        <Layer>
-        <Text
             color="white"
             {...this.state.text}
             onClick={() => console.log ('yooo')}

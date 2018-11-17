@@ -2,6 +2,7 @@ import React, {Suspense} from 'react';
 import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
+import Button from '@material-ui/core/Button';
 import MiniSideBar from './MiniSideBar.js';
 import Typography from '@material-ui/core/Typography';
 import Header from '../Common/Header';
@@ -14,8 +15,7 @@ const FlyerView = React.lazy (() => import ('../FlyerView'));
 const drawerWidth = 350;
 const styles = theme => ({
   root: {
-    display: 'flex',
-    overflow: 'hidden',
+    display: 'flex'
   },
   emptyTemp: {
     margin: '20%',
@@ -64,12 +64,14 @@ const styles = theme => ({
     ...theme.mixins.toolbar,
   },
   content: {
-    marginLeft:"10%",
     flexGrow: 1,
     padding: theme.spacing.unit * 3,
     width: `calc(100% - ${drawerWidth}px)`,
     paddingTop: '5.5rem',
   },
+  stageParent:{
+    width: "100%"
+  }
 });
 
 class MiniDrawer extends React.Component {
@@ -77,6 +79,7 @@ class MiniDrawer extends React.Component {
     open: false,
     ItemList: 'Template',
     imgSrc: '',
+    zoom: 1,
   };
 
   handleDrawerOpen = () => {
@@ -88,12 +91,18 @@ class MiniDrawer extends React.Component {
   };
 
   templateChange = src => {
-    console.log (this.state, 'hello');
     this.setState ({imgSrc: src});
   };
   showComponent = text => {
     this.setState ({ItemList: text});
   };
+  zoomIn = ()=>{
+    this.setState(prevState=>({zoom:prevState.zoom+0.1}))
+  }
+  
+  zoomOut = ()=>{
+    this.setState(prevState=>({zoom:prevState.zoom-0.1}))
+  }
   render () {
     const {classes} = this.props;
 
@@ -115,10 +124,11 @@ class MiniDrawer extends React.Component {
           />
         </Drawer>
         <main className={classes.content}>
+          <div id="stage-parent" className={classes.stageParent}>
           {this.state.imgSrc
-            ? <Main selectedBackground={this.state.imgSrc} />
+            ? <Main selectedBackground={this.state.imgSrc} zoom={this.state.zoom}/>
             : ''}
-          <div className={classes.toolbar} />
+          </div>
           <Grid item xs={6} className={classes.template}>
             {this.state.imgSrc
               ? <div>
@@ -143,6 +153,8 @@ class MiniDrawer extends React.Component {
                   </style>
                   <div id="xz"> Please Select A Template </div>
                 </Typography>}
+                <Button  onClick={this.zoomOut}>-</Button>
+                <Button  onClick={this.zoomIn}>+</Button>
             {/* <canvas
               ref="canvas"
               width="200"
