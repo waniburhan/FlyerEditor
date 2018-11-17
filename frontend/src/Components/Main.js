@@ -3,6 +3,8 @@ import {Stage, Layer, Rect, Text, Image} from 'react-konva';
 import ColoredRect from './Rectangle';
 import Transformer from './TransformerComponent.js';
 import Backgrounds from '../Common/TemplateData.js';
+import {MyContext} from '../Store/Provider';
+import {withStyles} from '@material-ui/core/styles';
 
 class BackgroundObject extends React.Component {
   state = {
@@ -52,58 +54,106 @@ class BackgroundObject extends React.Component {
   }
 }
 
+const styles = theme => ({
+  root: {
+    display: 'flex',
+    overflow: 'hidden',
+  },
+  invisibleInput: {
+    border: 'none',
+    position: 'absolute',
+    top: '30%',
+    background: 'transparent',
+    color: 'transparent',
+    outline: 'none',
+  },
+});
 class Main extends Component {
-  state = {
-    image: null,
-    scale: {x:1,y:1},
-    position: {x:0,y:0},
-    rectangles: [
-      {
-        fill: 'black',
-        name: 'rect1',
-      },
-    ],
-    text: {
+  constructor (props, context) {
+    super (props);
+    this.myInput = React.createRef ();
+    console.log (context, 'poolyeee');
 
-      stroke: 'orange',
-      fontSize: '100',
-      name:'text1'
-    },
-    selectedShapeName: '',
+    if (context) {
+      console.log ('poolyeee');
+
+      // context.state.textData.map ((rect, i) => (this['input_' + i] = React.createRef ()  ))
+    }
+    // this.createDynamicRef()
+    this.state = {
+        editBox: false,
+        image: null,
+        textData: [],
+        scale: {x:1,y:1},
+        position: {x:0,y:0},
+        rectangles: [
+          {
+            x: 10,
+            y: 10,
+            width: 721,
+            height: 1081,
+            fill: 'black',
+            name: 'rect1',
+          },
+        ],
+        text: {
+          stroke: 'red',
+          fontSize: '100',
+          name: 'text1',
+        },
+        selectedShapeName: '',
+      
+  }
+}
+  createDynamicRef = () => {
+    let value = '';
+    value = this.context;
+    if (value) {
+      return value.state.textData.map (
+        (rect, i) => (this['input_' + i] = React.createRef ())
+      );
+      console.log ('calledy');
+    }
+    console.log ('calledyt');
+
+    return (this.myInput = React.createRef ());
   };
 
   componentWillReceiveProps(nextProps){
     this.setState((prevState)=>({scale:{x:prevState.scale.x+nextProps.zoom,y:prevState.scale.y+nextProps.zoom}}))
   }
-  // handleStageMouseDown = e => {
-  //   // clicked on stage - cler selection
-  //   if (e.target === e.target.getStage ()) {
-  //     this.setState ({
-  //       selectedShapeName: '',
-  //     });
-  //     return;
-  //   }
-  //   // clicked on transformer - do nothing
-  //   const clickedOnTransformer =
-  //     e.target.getParent ().className === 'Transformer';
-  //   if (clickedOnTransformer) {
-  //     return;
-  //   }
-
-  //   // find clicked rect by its name
-  //   console.log("poo",e.target.name ())
-  //   const name = e.target.name ();
-  //   const rect = this.state.rectangles.find (r => r.name === name);
-  //   if (rect) {
-  //     this.setState ({
-  //       selectedShapeName: name,
-  //     });
-  //   } else {
-  //     this.setState ({
-  //       selectedShapeName: '',
-  //     });
-  //   }
-  // };
+  handleStageMouseDown = e => {
+    // clicked on stage - cler selection
+    if (e.target === e.target.getStage ()) {
+      this.setState ({
+        selectedShapeName: '',
+      });
+      return;
+    }
+    // clicked on transformer - do nothing
+    const clickedOnTransformer =
+      e.target.getParent ().className === 'Transformer';
+    if (clickedOnTransformer) {
+      return;
+    }
+    // find clicked rect by its name
+    const name = e.target.name ();
+    const rect = this.state.rectangles.find (r => r.name === name);
+    const text = this.state.text.name;
+    if (rect) {
+      this.setState ({
+        selectedShapeName: '',
+      });
+    } else if (text) {
+      this.setState ({
+        selectedShapeName: name,
+      });
+    } else {
+      this.setState ({
+        selectedShapeName: '',
+      });
+    }
+  };
   handleWheelZoom=(e)=>{
     e.evt.preventDefault();
     var stage = this.node.getStage().attrs;
@@ -125,34 +175,92 @@ class Main extends Component {
     this.setState({position:newPos})
 
   }
+
+  editTextBox = i => {
+    this.setState ({editBox: true});
+    this['input_' + i].current.focus ();
+    this.context.onTextColorChange(i)
+  };
+  onTextChange = (evt, i) => {
+    const items = this.state.textData;
+    items[i] = evt.target.value;
+    this.setState ({textData: items});
+  };
+  keyPress = e => {
+    if (e.keyCode == 13) {
+      this.setState ({textData: e.target.value});
+      this.setState ({editBox: false});
+    }
+  };
   render () {
-
-    let stageWidth = (window.innerWidth - 398) 
-    let stageHeight= (window.innerHeight - 112)
+    const {classes} = this.props;
+    this.createDynamicRef ();
     return (
-      <Stage width={stageWidth} height={stageHeight} x={this.state.position.x} y={this.state.position.y} onMouseDown={this.handleStageMouseDown}  className='container' scaleX={this.state.scale.x} scaleY={this.state.scale.y} ref={(node)=>this.node=node} onWheel={this.handleWheelZoom} draggable>
-        <Layer>
-          {this.state.rectangles.map ((rect, i) => (
-            <BackgroundObject
-              stageWidth={stageWidth}
-              stageHeight={stageHeight}
-              key={i}
-              {...rect}
-              src={this.props.selectedBackground}
-            />
-          ))}
-          <Transformer selectedShapeName={this.state.selectedShapeName} />
+        <MyContext.Consumer>
+          {context => {
+            let stageWidth = (window.innerWidth - 398) 
+            let stageHeight= (window.innerHeight - 112)
+            return (<React.Fragment>
+              <Stage
+              width={stageWidth} 
+              height={stageHeight} 
+              x={this.state.position.x} 
+              y={this.state.position.y} 
+              onMouseDown={this.handleStageMouseDown}  
+              className='container' 
+              scaleX={this.state.scale.x} 
+              scaleY={this.state.scale.y} 
+              ref={(node)=>this.node=node} 
+              onWheel={this.handleWheelZoom} 
+              draggable
+              >
+                <Layer>
+                  {this.state.rectangles.map ((rect, i) => (
+                    <BackgroundObject
+                      key={i}
+                      {...rect}
+                      src={this.props.selectedBackground}
+                    />
+                  ))}
+                  <Transformer
+                    selectedShapeName={this.state.selectedShapeName}
+                  />
+                  {context.state.text.map ((rect, i) => (
+                    <Text
+                      key={i}
+                      {...rect}
+                      onClick={() => this.editTextBox (i)}
+                      draggable
+                      text={context.state.textData[i]}
+                    />
+                  ))}
+                </Layer>
+              </Stage>
+              {context.state.textData.map ((rect, i) => (
+                <React.Fragment>
+                  {this.state.editBox
+                    ? <input
+                        key={i}
+                        ref={this['input_' + i]}
+                        className={classes.invisibleInput}
+                        type="text"
+                        onChange={evt => context.onTextChange (evt, i)}
+                        onKeyDown={this.keyPress}
+                      />
+                    : ''}
+                  <button onClick={() => context.addField (i)}>
+                    hieuuydcuygdc
+                  </button>
+                </React.Fragment>
+              ))}
+              <button onClick={() => this.createDynamicRef ()}>const</button>
 
-          <Text
-            color="white"
-            {...this.state.text}
-            onClick={() => console.log ('yooo')}
-            draggable
-            text="Try click on rect"
-          />
-        </Layer>
-      </Stage>
+            </React.Fragment>)
+          }}
+        </MyContext.Consumer>
     );
   }
 }
-export default Main;
+Main.contextType = MyContext;
+
+export default withStyles (styles) (Main);
