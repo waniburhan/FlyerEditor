@@ -5,6 +5,10 @@ import Transformer from './TransformerComponent.js';
 import Backgrounds from '../Common/TemplateData.js';
 import {MyContext} from '../Store/Provider';
 import {withStyles} from '@material-ui/core/styles';
+import Grid from '@material-ui/core/Grid';
+import IconButton from '@material-ui/core/IconButton';
+import ZoomIn from '@material-ui/icons/ZoomIn';
+import ZoomOut from '@material-ui/icons/ZoomOut';
 
 class BackgroundObject extends React.Component {
   state = {
@@ -67,6 +71,14 @@ const styles = theme => ({
     color: 'transparent',
     outline: 'none',
   },
+  fixedBottom:{
+    position: "fixed",
+    bottom: 0,
+    right: 0,
+    width: "auto",
+    backgroundColor: theme.palette.background.paper,
+    zIndex: 9999
+  }
 });
 class Main extends Component {
   constructor (props, context) {
@@ -118,9 +130,8 @@ class Main extends Component {
 
     return (this.myInput = React.createRef ());
   };
-
-  componentWillReceiveProps(nextProps){
-    this.setState((prevState)=>({scale:{x:prevState.scale.x+nextProps.zoom,y:prevState.scale.y+nextProps.zoom}}))
+  zoomTrigger = (delta)=>{
+    this.setState((prevState)=>({scale:{x:prevState.scale.x+delta,y:prevState.scale.y+delta}}))
   }
   handleStageMouseDown = e => {
     // clicked on stage - cler selection
@@ -187,7 +198,7 @@ class Main extends Component {
     this.setState ({textData: items});
   };
   keyPress = e => {
-    if (e.keyCode == 13) {
+    if (e.keyCode === 13) {
       this.setState ({textData: e.target.value});
       this.setState ({editBox: false});
     }
@@ -217,6 +228,8 @@ class Main extends Component {
                 <Layer>
                   {this.state.rectangles.map ((rect, i) => (
                     <BackgroundObject
+                    stageWidth={stageWidth} 
+                    stageHeight={stageHeight} 
                       key={i}
                       {...rect}
                       src={this.props.selectedBackground}
@@ -254,13 +267,19 @@ class Main extends Component {
                 </React.Fragment>
               ))}
               <button onClick={() => this.createDynamicRef ()}>const</button>
-
-            </React.Fragment>)
+              <Grid container className={classes.fixedBottom}>
+            <IconButton size="small" color="" onClick={()=>{this.zoomTrigger(-0.1)}}><ZoomOut/></IconButton>
+            <IconButton size="small"  onClick={()=>{this.zoomTrigger(0.1)}}><ZoomIn/></IconButton>
+           </Grid>  
+            </React.Fragment>
+           
+            )
           }}
+           
         </MyContext.Consumer>
     );
   }
 }
 Main.contextType = MyContext;
 
-export default withStyles (styles) (Main);
+export default withStyles(styles)(Main);

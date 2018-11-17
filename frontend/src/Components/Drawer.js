@@ -2,15 +2,12 @@ import React, {Suspense} from 'react';
 import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
-import IconButton from '@material-ui/core/IconButton';
 import MiniSideBar from './MiniSideBar.js';
 import Typography from '@material-ui/core/Typography';
 import Header from '../Common/Header';
 import Main from './Main.js';
 import Aside from './Aside.js';
-import Grid from '@material-ui/core/Grid';
-import ZoomIn from '@material-ui/icons/ZoomIn';
-import ZoomOut from '@material-ui/icons/ZoomOut';
+
 
 const FlyerView = React.lazy (() => import ('../FlyerView'));
 
@@ -70,14 +67,6 @@ const styles = theme => ({
   },
   stageParent:{
     width: "100%"
-  },
-  fixedBottom:{
-    position: "fixed",
-    bottom: 0,
-    right: 0,
-    width: "auto",
-    backgroundColor: theme.palette.background.paper,
-    zIndex: 9999
   }
 });
 
@@ -85,8 +74,7 @@ class MiniDrawer extends React.Component {
   state = {
     open: false,
     ItemList: 'Template',
-    imgSrc: '',
-    zoomDelta: 0,
+    imgSrc: ''
   };
 
   handleDrawerOpen = () => {
@@ -103,13 +91,6 @@ class MiniDrawer extends React.Component {
   showComponent = text => {
     this.setState ({ItemList: text});
   };
-  zoomIn = ()=>{
-    this.setState({zoomDelta:0.1})
-  }
-  
-  zoomOut = ()=>{
-    this.setState({zoomDelta:-0.1})
-  }
   render () {
     const {classes} = this.props;
 
@@ -134,10 +115,6 @@ class MiniDrawer extends React.Component {
           {this.state.imgSrc
             ? <Main selectedBackground={this.state.imgSrc} zoom={this.state.zoomDelta}/>
             : ''}
-          <Grid container className={classes.fixedBottom}>
-                <IconButton size="small" color="" onClick={this.zoomOut}><ZoomOut/></IconButton>
-                <IconButton size="small"  onClick={this.zoomIn}><ZoomIn/></IconButton>
-          </Grid>  
         </main>
       </div>
     );
