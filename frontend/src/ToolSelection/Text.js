@@ -5,6 +5,12 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
 import {MyContext} from '../Store/Provider';
+import MenuItem from '@material-ui/core/MenuItem';
+import FormControl from '@material-ui/core/FormControl';
+import Select from '@material-ui/core/Select';
+import InputAdornment from '@material-ui/core/InputAdornment';
+import TextField from '@material-ui/core/TextField';
+import classNames from 'classnames';
 const styles = theme => ({
   list: {
     padding: '4px 12px',
@@ -26,11 +32,24 @@ const styles = theme => ({
     verticalAlign: 'baseline',
   },
   colors: {
+    display: "inline-block",
     height: '28px',
     width: '28px',
-    display: 'inherit',
     margin: '2%',
     //   backgroundColor:"red"
+  },
+  formControl: {
+    margin: theme.spacing.unit,
+    width: 90
+  },
+  selectEmpty: {
+    marginTop: theme.spacing.unit * 2,
+  },
+  margin: {
+    margin: theme.spacing.unit,
+  },
+  textField: {
+    width: 90,
   },
 });
 
@@ -39,12 +58,17 @@ class TextTool extends Component {
     super (props);
     this.textInput = React.createRef ();
 
-    this.state = {};
+    this.state = {
+      age: ''
+    };
   }
   selectedColor = () => {
     // this.textInput
     console.log ('][][][]');
   };
+  // handleChange = event => {
+  //   this.setState({ [event.target.name]: event.target.value });
+  // };
 
   render () {
     const {classes} = this.props;
@@ -89,7 +113,7 @@ class TextTool extends Component {
             <ListItem button key={'1'}>
               <ListItemText primary={'Text Colors'} />
             </ListItem>
-            <div style={{display: 'inline-block'}}>
+            <div>
               <div
                 onClick={() => context.Color ('white')}
                 className={classes.colors}
@@ -148,6 +172,31 @@ class TextTool extends Component {
               />
 
             </div>
+
+          <TextField
+          label="Font Size"
+          id="fontSize"
+          className={classNames(classes.margin, classes.textField)}
+          InputProps={{
+            endAdornment: <InputAdornment position="start">Px</InputAdornment>,
+          }}
+        />
+        <FormControl className={classes.formControl}>
+          <Select
+            value={this.props.align}
+            onChange={this.props.onTextAligmnentChange}
+            name="align"
+            displayEmpty
+            className={classes.selectEmpty}
+          >
+            <MenuItem value="" disabled>
+              Align
+            </MenuItem>
+            <MenuItem value={"Left"}>Left</MenuItem>
+            <MenuItem value={"Center"}>Center</MenuItem>
+            <MenuItem value={"Right"}>Right</MenuItem>
+          </Select>
+        </FormControl>
           </div>
         )}
       </MyContext.Consumer>
