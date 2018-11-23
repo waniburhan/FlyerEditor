@@ -4,33 +4,17 @@ import {withStyles} from '@material-ui/core/styles';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
 import Divider from '@material-ui/core/Divider';
+import Grid from '@material-ui/core/Grid';
 import {MyContext} from '../Store/Provider';
 import MenuItem from '@material-ui/core/MenuItem';
+import Input from '@material-ui/core/Input';
+import InputLabel from '@material-ui/core/InputLabel';
 import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import TextField from '@material-ui/core/TextField';
 import classNames from 'classnames';
 const styles = theme => ({
-  list: {
-    padding: '4px 12px',
-    marginBottom: '6px',
-    cursor: 'pointer',
-    color: 'white',
-    listStyle: 'none',
-    backgroundColor: '#2f2f2f',
-    lineHeight: '35px',
-    borderRadius: '3px',
-  },
-  UList: {
-    listStyle: 'none',
-    margin: '0',
-    padding: '0',
-    border: '0',
-    font: 'inherit',
-    fontSize: '100%',
-    verticalAlign: 'baseline',
-  },
   colors: {
     display: "inline-block",
     height: '28px',
@@ -41,6 +25,9 @@ const styles = theme => ({
   formControl: {
     margin: theme.spacing.unit,
     width: 90
+  },
+  fullWidth:{
+    width:"100%"
   },
   selectEmpty: {
     marginTop: theme.spacing.unit * 2,
@@ -74,45 +61,15 @@ class TextTool extends Component {
     const {classes} = this.props;
     return (
       <MyContext.Consumer>
-        {context => (
-          <div style={{width: '100%'}}>
-            <ul className={classes.UList}>
-              <li
-                onClick={() => context.addField ('h1')}
-                className={classes.list}
-              >
-                Title
-              </li>
-              <li
-                onClick={() => context.addField ('h2')}
-                className={classes.list}
-              >
-                Subtitle
-              </li>
-              <li
-                onClick={() => context.addField ('h3')}
-                className={classes.list}
-              >
-                {' '}Subtitle 2
-              </li>
-              <li
-                onClick={() => context.addField ('h4')}
-                className={classes.list}
-              >
-                Subtitle 3
-              </li>
-              <li
-                onClick={() => context.addField ('h5')}
-                className={classes.list}
-              >
-                Body text
-              </li>
-
-            </ul>
-            <Divider />
+        {context => {
+         let activeTextbox = context.state.is_active
+         console.log(context)
+         return <div style={{width: '100%'}}>
+         {activeTextbox?<React.Fragment>
             <ListItem button key={'1'}>
               <ListItemText primary={'Text Colors'} />
             </ListItem>
+            <Divider />
             <div>
               <div
                 onClick={() => context.Color ('white')}
@@ -173,32 +130,112 @@ class TextTool extends Component {
 
             </div>
 
+          <Grid container ><TextField
+          label="X"
+          id="XText"
+          type="number"
+          name="XText"
+          onChange = {context.onTextXChange}
+          value = {context.state.textObject[activeTextbox].x}
+          className={classNames(classes.margin, classes.textField)}
+          InputProps={{
+            endAdornment: <InputAdornment position="start">Px</InputAdornment>,
+          }}
+        />
+        <TextField
+          label="Y"
+          id="YText"
+          name="YText"
+          type="number"
+          onChange = {context.onTextYChange}
+          value = {context.state.textObject[activeTextbox].y}
+          className={classNames(classes.margin, classes.textField)}
+          InputProps={{
+            endAdornment: <InputAdornment position="start">Px</InputAdornment>,
+          }}
+        />
+        </Grid>
+
+          <Grid container ><TextField
+          label="Width"
+          id="widthText"
+          type="number"
+          name="widthText"
+          onChange = {context.onTextWidthChange}
+          value = {context.state.textObject[activeTextbox].width}
+          className={classNames(classes.margin, classes.textField)}
+          InputProps={{
+            endAdornment: <InputAdornment position="start">Px</InputAdornment>,
+          }}
+        />
+        <TextField
+          label="Height"
+          id="heightText"
+          name="heightText"
+          type="number"
+          onChange = {context.onTextHeightChange}
+          value = {context.state.textObject[activeTextbox].height}
+          className={classNames(classes.margin, classes.textField)}
+          InputProps={{
+            endAdornment: <InputAdornment position="start">Px</InputAdornment>,
+          }}
+        />
+        </Grid>
+        <Grid container >
           <TextField
           label="Font Size"
           id="fontSize"
+          type="number"
+          name="fontSize"
+          onChange = {context.onTextSizeChange}
+          value = {context.state.textObject[activeTextbox].fontSize}
           className={classNames(classes.margin, classes.textField)}
           InputProps={{
             endAdornment: <InputAdornment position="start">Px</InputAdornment>,
           }}
         />
         <FormControl className={classes.formControl}>
+        <InputLabel shrink htmlFor="align-label-placeholder">
+            Align
+          </InputLabel>
           <Select
-            value={this.props.align}
-            onChange={this.props.onTextAligmnentChange}
-            name="align"
-            displayEmpty
+            value={context.state.textObject[activeTextbox].align}
+            onChange={context.onTextAligmnentChange}            
+            input={<Input name="align" id="align-label-placeholder" />}
             className={classes.selectEmpty}
           >
             <MenuItem value="" disabled>
               Align
             </MenuItem>
-            <MenuItem value={"Left"}>Left</MenuItem>
-            <MenuItem value={"Center"}>Center</MenuItem>
-            <MenuItem value={"Right"}>Right</MenuItem>
+            <MenuItem value={"left"}>Left</MenuItem>
+            <MenuItem value={"center"}>Center</MenuItem>
+            <MenuItem value={"right"}>Right</MenuItem>
           </Select>
         </FormControl>
+        </Grid>
+        <FormControl className={classes.formControl+" "+classes.fullWidth}>
+        <InputLabel shrink htmlFor="family-label-placeholder">
+            Font Family
+          </InputLabel>
+          <Select
+            value={context.state.textObject[activeTextbox].fontFamily}
+            onChange={context.onTextVariantChange}            
+            input={<Input name="fontFamily" id="family-label-placeholder" />}
+            className={classes.selectEmpty}
+          >
+            <MenuItem value="" disabled>
+              Family
+            </MenuItem>
+            <MenuItem value={"arial"}>Arial</MenuItem>
+            <MenuItem value={"roboto"}>Roboto</MenuItem>
+            <MenuItem value={"Helvetica Neue"}>Helvetica Neue</MenuItem>
+            <MenuItem value={"sans-serif"}>Sans-serif</MenuItem>
+            
+          </Select>
+        </FormControl>
+        </React.Fragment>:<div>Please select the text box</div>}
           </div>
-        )}
+        }}
       </MyContext.Consumer>
     );
   }
