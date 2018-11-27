@@ -13,8 +13,8 @@ import ZoomOut from '@material-ui/icons/ZoomOut';
 class BackgroundObject extends React.Component {
   state = {
     image: null,
-    width: "",
-    height: ""
+    width: '',
+    height: '',
   };
 
   componentDidMount () {
@@ -23,7 +23,7 @@ class BackgroundObject extends React.Component {
     image.onload = () => {
       // setState will redraw layer
       // because "image" property is changed
-      this.setState({width: image.width,height:image.height})
+      this.setState ({width: image.width, height: image.height});
       this.setState ({
         image: image,
       });
@@ -35,7 +35,7 @@ class BackgroundObject extends React.Component {
     image.onload = () => {
       // setState will redraw layer
       // because "image" property is changed
-      this.setState({width: image.width,height:image.height})
+      this.setState ({width: image.width, height: image.height});
       this.setState ({
         image: image,
       });
@@ -43,13 +43,13 @@ class BackgroundObject extends React.Component {
   }
 
   render () {
-    let aspectRatio = this.state.width/this.state.height
+    let aspectRatio = this.state.width / this.state.height;
     return (
       <Image
-        x={this.props.stageWidth/2 - (this.props.stageHeight * aspectRatio)/2}
+        x={this.props.stageWidth / 2 - this.props.stageHeight * aspectRatio / 2}
         y={this.props.stageHeight - this.props.stageHeight}
-        width = {this.props.stageHeight * aspectRatio}
-        height = {this.props.stageHeight}
+        width={this.props.stageHeight * aspectRatio}
+        height={this.props.stageHeight}
         fill={this.props.fill}
         name={this.props.name}
         image={this.state.image}
@@ -71,14 +71,14 @@ const styles = theme => ({
     color: 'transparent',
     outline: 'none',
   },
-  fixedBottom:{
-    position: "fixed",
+  fixedBottom: {
+    position: 'fixed',
     bottom: 0,
     right: 0,
-    width: "auto",
+    width: 'auto',
     backgroundColor: theme.palette.background.paper,
-    zIndex: 9999
-  }
+    zIndex: 9999,
+  },
 });
 class Main extends Component {
   constructor (props, context) {
@@ -93,30 +93,29 @@ class Main extends Component {
     }
     // this.createDynamicRef()
     this.state = {
-        editBox: false,
-        image: null,
-        textData: [],
-        scale: {x:1,y:1},
-        position: {x:0,y:0},
-        rectangles: [
-          {
-            x: 10,
-            y: 10,
-            width: 721,
-            height: 1081,
-            fill: 'black',
-            name: 'rect1',
-          },
-        ],
-        text: {
-          stroke: 'red',
-          fontSize: '100',
-          name: 'text1',
+      editBox: false,
+      image: null,
+      textData: [],
+      scale: {x: 1, y: 1},
+      position: {x: 0, y: 0},
+      rectangles: [
+        {
+          x: 10,
+          y: 10,
+          width: 721,
+          height: 1081,
+          fill: 'black',
+          name: 'rect1',
         },
-        selectedShapeName: '',
-      
+      ],
+      text: {
+        stroke: 'red',
+        fontSize: '100',
+        name: 'text1',
+      },
+      selectedShapeName: '',
+    };
   }
-}
   createDynamicRef = () => {
     let value = '';
     value = this.context;
@@ -124,15 +123,14 @@ class Main extends Component {
       return value.state.textData.map (
         (rect, i) => (this['input_' + i] = React.createRef ())
       );
-      console.log ('calledy');
     }
-    console.log ('calledyt');
-
     return (this.myInput = React.createRef ());
   };
-  zoomTrigger = (delta)=>{
-    this.setState((prevState)=>({scale:{x:prevState.scale.x+delta,y:prevState.scale.y+delta}}))
-  }
+  zoomTrigger = delta => {
+    this.setState (prevState => ({
+      scale: {x: prevState.scale.x + delta, y: prevState.scale.y + delta},
+    }));
+  };
   handleStageMouseDown = e => {
     // clicked on stage - cler selection
     if (e.target === e.target.getStage ()) {
@@ -147,7 +145,7 @@ class Main extends Component {
     if (clickedOnTransformer) {
       return;
     }
-    // find clicked rect by its name
+    // find clicked object by its name
     const name = e.target.name ();
     const rect = this.state.rectangles.find (r => r.name === name);
     const text = this.state.text.name;
@@ -165,32 +163,31 @@ class Main extends Component {
       });
     }
   };
-  handleWheelZoom=(e)=>{
-    e.evt.preventDefault();
-    var stage = this.node.getStage().attrs;
+  handleWheelZoom = e => {
+    e.evt.preventDefault ();
+    var stage = this.node.getStage ().attrs;
     var scaleBy = 1.01;
     var oldScale = stage.scaleX;
 
     var mousePointTo = {
-        x: (e.evt.x-398) / oldScale - stage.x / oldScale,
-        y: (e.evt.y-112 )/ oldScale - stage.y / oldScale,
+      x: (e.evt.x - 398) / oldScale - stage.x / oldScale,
+      y: (e.evt.y - 112) / oldScale - stage.y / oldScale,
     };
 
     var newScale = e.evt.deltaY > 0 ? oldScale * scaleBy : oldScale / scaleBy;
-    this.setState({scale:{ x: newScale, y: newScale }})
+    this.setState ({scale: {x: newScale, y: newScale}});
 
     var newPos = {
-        x: -(mousePointTo.x - (e.evt.x-398) / newScale) * newScale,
-        y: -(mousePointTo.y - (e.evt.y - 112) / newScale) * newScale
+      x: -(mousePointTo.x - (e.evt.x - 398) / newScale) * newScale,
+      y: -(mousePointTo.y - (e.evt.y - 112) / newScale) * newScale,
     };
-    this.setState({position:newPos})
-
-  }
+    this.setState ({position: newPos});
+  };
 
   editTextBox = i => {
     this.setState ({editBox: true});
     this['input_' + i].current.focus ();
-    this.context.onTextColorChange(i)
+    this.context.onTextColorChange (i);
   };
   onTextChange = (evt, i) => {
     const items = this.state.textData;
@@ -207,29 +204,30 @@ class Main extends Component {
     const {classes} = this.props;
     this.createDynamicRef ();
     return (
-        <MyContext.Consumer>
-          {context => {
-            let stageWidth = (window.innerWidth - 398) 
-            let stageHeight= (window.innerHeight - 112)
-            return (<React.Fragment>
+      <MyContext.Consumer>
+        {context => {
+          let stageWidth = window.innerWidth - 398;
+          let stageHeight = window.innerHeight - 112;
+          return (
+            <React.Fragment>
               <Stage
-              width={stageWidth} 
-              height={stageHeight} 
-              x={this.state.position.x} 
-              y={this.state.position.y} 
-              onMouseDown={this.handleStageMouseDown}  
-              className='container' 
-              scaleX={this.state.scale.x} 
-              scaleY={this.state.scale.y} 
-              ref={(node)=>this.node=node} 
-              onWheel={this.handleWheelZoom} 
-              draggable
+                width={stageWidth}
+                height={stageHeight}
+                x={this.state.position.x}
+                y={this.state.position.y}
+                onMouseDown={this.handleStageMouseDown}
+                className="container"
+                scaleX={this.state.scale.x}
+                scaleY={this.state.scale.y}
+                ref={node => (this.node = node)}
+                onWheel={this.handleWheelZoom}
+                draggable
               >
                 <Layer>
                   {this.state.rectangles.map ((rect, i) => (
                     <BackgroundObject
-                    stageWidth={stageWidth} 
-                    stageHeight={stageHeight} 
+                      stageWidth={stageWidth}
+                      stageHeight={stageHeight}
                       key={i}
                       {...rect}
                       src={this.props.selectedBackground}
@@ -261,25 +259,36 @@ class Main extends Component {
                         onKeyDown={this.keyPress}
                       />
                     : ''}
-                  <button onClick={() => context.addField (i)}>
-                    hieuuydcuygdc
-                  </button>
                 </React.Fragment>
               ))}
               <button onClick={() => this.createDynamicRef ()}>const</button>
               <Grid container className={classes.fixedBottom}>
-            <IconButton size="small" color="" onClick={()=>{this.zoomTrigger(-0.1)}}><ZoomOut/></IconButton>
-            <IconButton size="small"  onClick={()=>{this.zoomTrigger(0.1)}}><ZoomIn/></IconButton>
-           </Grid>  
+                <IconButton
+                  size="small"
+                  color=""
+                  onClick={() => {
+                    this.zoomTrigger (-0.1);
+                  }}
+                >
+                  <ZoomOut />
+                </IconButton>
+                <IconButton
+                  size="small"
+                  onClick={() => {
+                    this.zoomTrigger (0.1);
+                  }}
+                >
+                  <ZoomIn />
+                </IconButton>
+              </Grid>
             </React.Fragment>
-           
-            )
-          }}
-           
-        </MyContext.Consumer>
+          );
+        }}
+
+      </MyContext.Consumer>
     );
   }
 }
 Main.contextType = MyContext;
 
-export default withStyles(styles)(Main);
+export default withStyles (styles) (Main);
