@@ -227,9 +227,6 @@ class Main extends Component {
       this.setState ({editBox: false});
     }
   };
-  handleExport=()=>{
-  this.uri = document.getElementsByTagName('canvas')[0].toDataURL('image/png')
-  }
   getXY = (e) =>{
     this.context.onTextXChange(null,e.target.attrs.x)
     this.context.onTextYChange(null,e.target.attrs.y)
@@ -279,8 +276,7 @@ class Main extends Component {
                      name={"textRect"+(i+1)}
                      width={context.state.textObject[key].width}
                      height={context.state.textObject[key].height}
-                     stroke={(context.state.is_active === key)?"#00bfff":""} 
-                     dash= {[10,15]} 
+                     stroke={(context.state.is_active === key)?"#0fb4bb":""} 
                     //  onMouseDown={this.handleStageMouseDown}
                      
                     //  ref={`textRect+${i}`}
@@ -320,8 +316,6 @@ class Main extends Component {
                 </React.Fragment>
               ))}
               <Grid container className={classes.fixedBottom}>
-              <a href={this.uri} download="my-file-name.png">Download</a>
-            <IconButton size="small" color="" onClick={this.handleExport}><ZoomOut/></IconButton>
             <IconButton size="small" color="" onClick={()=>{this.zoomTrigger(-0.2)}}><ZoomOut/></IconButton>
             <IconButton size="small"  onClick={()=>{this.zoomTrigger(0.2)}}><ZoomIn/></IconButton>
            </Grid>  
