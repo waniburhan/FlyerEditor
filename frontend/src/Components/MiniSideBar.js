@@ -32,6 +32,9 @@ const styles = theme => ({
       },
       list:{
       padding: 0,
+      },
+      text:{
+        marginTop: 5
       }
 })
 
@@ -50,14 +53,14 @@ class MiniSideBar extends Component {
                   <ListItem button className={this.props.ItemList === "Template"?classes.listItemSelected:classes.listItem} onClick={() => this.props.showComponent("Template")}>
                     <ListItemIcon className={classes.icon}>
                      <Templates  />
-                    </ListItemIcon><br/>
-                    <ListItemText primary="Template" />
+                    </ListItemIcon>
+                    <ListItemText primary="Template" className={classes.text}/>
                   </ListItem>
                   <ListItem button className={this.props.ItemList === "Format"?classes.listItemSelected:classes.listItem} onClick={() => this.props.showComponent("Format")}>
                     <ListItemIcon className={classes.icon} >
                     <TextFormat  />
-                    </ListItemIcon><br/>
-                    <ListItemText primary="Format"/>
+                    </ListItemIcon>
+                    <ListItemText primary="Format" className={classes.text}/>
                   </ListItem>
                   
               </List>

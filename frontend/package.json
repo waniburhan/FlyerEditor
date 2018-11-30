@@ -51,6 +51,7 @@
     "react-dev-utils": "^6.1.1",
     "react-dom": "^16.6.0",
     "react-konva": "^16.6.11",
+    "react-rangeslider": "^2.2.0",
     "resolve": "1.8.1",
     "sass-loader": "7.1.0",
     "style-loader": "0.23.0",

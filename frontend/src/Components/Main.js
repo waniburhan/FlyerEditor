@@ -9,6 +9,7 @@ import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
 import ZoomIn from '@material-ui/icons/ZoomIn';
 import ZoomOut from '@material-ui/icons/ZoomOut';
+import Range from "../Common/Slider.js"
 
 class BackgroundObject extends React.Component {
   state = {
@@ -78,7 +79,11 @@ const styles = theme => ({
     width: 'auto',
     backgroundColor: theme.palette.background.paper,
     zIndex: 9999,
+    width:"100%",
   },
+  range:{
+    marginLeft: "45%",
+  }
 });
 class Main extends Component {
   constructor (props, context) {
@@ -98,8 +103,6 @@ class Main extends Component {
         textData: [],
         scale: {x:1,y:1},
         position: {x:0,y:0},
-        textWidth:[500,500,500],
-        textHeight:[200,200,200],
         rectangles: [
           {
             x: 10,
@@ -124,25 +127,32 @@ class Main extends Component {
       selectedShapeName: '',
     };
   }
-  createDynamicRef = () => {
-    let value = '';
-    value = this.context;
-    if (value) {
-      return value.state.textLayers.map (
-        (rect, i) => (this['input_' + i] = React.createRef ())
-      );
-    }
-    return (this.myInput = React.createRef ());
-  };
+
+  // createDynamicRef = () => {
+  //   let value = '';
+  //   value = this.context;
+  //   if (value) {
+  //     return value.state.textLayers.map (
+  //       (rect, i) => (this['input_' + i] = React.createRef ())
+  //     );
+  //     console.log ('calledy');
+  //   }
+  //   console.log ('calledyt');
+
+  //   return (this.myInput = React.createRef ());
+  // };
   zoomTrigger = (delta)=>{
     this.setState((prevState)=>({scale:{x:prevState.scale.x+delta,y:prevState.scale.y+delta}}))
+    this.setState((prevState)=>({position:{x:prevState.position.x-(delta*430),y:prevState.position.y-(delta*330)}}))
   }
   handleStageMouseDown = (e,i) => {
+    console.log(e.target.name (),"trans")
     // clicked on stage - cler selection
     if (e.target === e.target.getStage ()) {
       this.setState ({
-        selectedShapeName: '',
+        selectedShapeName: ''
       });
+      // console.log(this.context.resetActiveComponent(),"clicked stage")
       return;
     }
     // clicked on transformer - do nothing
@@ -151,19 +161,22 @@ class Main extends Component {
     if (clickedOnTransformer) {
       return;
     }
-    // find clicked object by its name
-    const name = e.target.name ();
-    console.log(e.target.attrs,"rectangle")
-    const transformedAttrs = e.target.attrs
-    this.setState(prevState=>{
-      const newArray = [...prevState.textWidth]
-      newArray[i]=transformedAttrs.width*transformedAttrs.scaleX
-      return {textWidth: newArray}})
 
-      this.setState(prevState=>{
-        const newArray = [...prevState.textWidth]
-        newArray[i]=transformedAttrs.height*transformedAttrs.scaleY
-        return {textHeight: newArray}})
+    // find clicked rect by its name
+    const name = e.target.name ();
+    
+    // const transformedAttrs = e.target.attrs
+
+    //trial for transform change
+    // this.setState(prevState=>{
+    //   const newArray = [...prevState.textWidth]
+    //   newArray[i]=transformedAttrs.width*transformedAttrs.scaleX
+    //   return {textWidth: newArray}})
+
+    //   this.setState(prevState=>{
+    //     const newArray = [...prevState.textWidth]
+    //     newArray[i]=transformedAttrs.height*transformedAttrs.scaleY
+    //     return {textHeight: newArray}})
     // const rect = this.state.rectangles.find (r => r.name === name);
     // const text = this.state.text.name;
     this.setState ({
@@ -208,7 +221,6 @@ class Main extends Component {
 
   editTextBox = (evt,key) => {
     console.log(evt,"evttt")
-    console.log(this.node.getStage().attrs,"fd")
     this.setState ({editBox: true});
     this.context.setActiveComponent(key)
     document.getElementById(key).focus();
@@ -225,12 +237,13 @@ class Main extends Component {
       this.setState ({editBox: false});
     }
   };
-  handleExport=()=>{
-  this.uri = document.getElementsByTagName('canvas')[0].toDataURL('image/png')
+  getXY = (e) =>{
+    this.context.onTextXChange(null,e.target.attrs.x)
+    this.context.onTextYChange(null,e.target.attrs.y)
   }
   render () {
     const {classes} = this.props;
-    this.createDynamicRef ();
+    console.log(this.groupnode,"gropu")
     return (
       <MyContext.Consumer>
         {context => {
@@ -267,22 +280,22 @@ class Main extends Component {
                   {context.state.textLayers.map ((key, i) => 
                   {
                     const {x,y,...textProps}=context.state.textObject[key]
-                    console.log(this.textRect,"textRect")
-                    return <Group  x={x} y={y} draggable>
+                    const draggable = key === context.state.is_active?true:false
+                    console.log(draggable,"draggable")
+                    return <Group  x={x} y={y} draggable={draggable} onDragEnd={this.getXY}>
                     <Rect
                      name={"textRect"+(i+1)}
-                     width={500}
-                     height={200}
-                     stroke={(context.state.is_active === key)?"#00bfff":""} 
-                     dash= {[10,15]}            
-                    //  onMouseDown={(evt)=>this.handleStageMouseDown(evt,i)}
+                     width={context.state.textObject[key].width}
+                     height={context.state.textObject[key].height}
+                     stroke={(context.state.is_active === key)?"#0fb4bb":""} 
+                    //  onMouseDown={this.handleStageMouseDown}
                      
                     //  ref={`textRect+${i}`}
                    />
                     <Text
                       key={i}
-                      width={this.state.textWidth[i]}
-                      height={this.state.textHeight[i]}
+                      width={context.state.textObject[key].textWidth}
+                      height={context.state.textObject[key].textHeight}
                       // ref={`text+${i}`}
                       {...textProps}
                       onClick={(evt) => this.editTextBox (evt,key)}
@@ -306,28 +319,28 @@ class Main extends Component {
                         id={key}
                         className={classes.invisibleInput}
                         type="text"
-                        onChange={(evt )=> context.onTextChange(evt, key)}
+                        onChange={context.onTextChange}
                         // onKeyDown={(evt,key)=>this.keyPress(evt,key)}
                         value={context.state.textObject[key].textData}
                       />
                     : ''}
                 </React.Fragment>
               ))}
-              <button onClick={() => this.createDynamicRef ()}>const</button>
               <Grid container className={classes.fixedBottom}>
-              <a href={this.uri} download="my-file-name.png">Download</a>
-            <IconButton size="small" color="" onClick={this.handleExport}><ZoomOut/></IconButton>
-            <IconButton size="small" color="" onClick={()=>{this.zoomTrigger(-0.1)}}><ZoomOut/></IconButton>
-            <IconButton size="small"  onClick={()=>{this.zoomTrigger(0.1)}}><ZoomIn/></IconButton>
+            <IconButton className={classes.range} size="small" color="" onClick={()=>{this.zoomTrigger(-0.2)}}><ZoomOut/></IconButton>
+            <Range zoomTrigger={this.zoomTrigger}/>
+            <IconButton size="small"  onClick={()=>{this.zoomTrigger(0.2)}}><ZoomIn/></IconButton>
            </Grid>  
             </React.Fragment>
           );
         }}
 
       </MyContext.Consumer>
-    );
-  }
+    )
+  };
 }
+
+
 Main.contextType = MyContext;
 
 export default withStyles (styles) (Main);

@@ -30,3 +30,22 @@
     transform: rotate(360deg);
   }
 }
+.range .rangeslider{
+  background: #2f2f2f;
+}
+.range .rangeslider-horizontal{
+  height: 8px;
+}
+.range .rangeslider-horizontal .rangeslider__fill{
+  background-color: aquamarine;
+}
+.range .rangeslider-horizontal .rangeslider__handle{
+height:20px;
+width: 20px;
+}
+.range .rangeslider-horizontal .rangeslider__handle:after{
+  display: none
+}
+.rangeslider, .rangeslider .rangeslider__fill{
+
+}
