@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Stage, Layer, Rect, Text, Image} from 'react-konva';
+import {Stage, Layer,Group, Rect, Text, Image} from 'react-konva';
 import ColoredRect from './Rectangle';
 import Transformer from './TransformerComponent.js';
 import Backgrounds from '../Common/TemplateData.js';
@@ -93,21 +93,29 @@ class Main extends Component {
     }
     // this.createDynamicRef()
     this.state = {
-      editBox: false,
-      image: null,
-      textData: [],
-      scale: {x: 1, y: 1},
-      position: {x: 0, y: 0},
-      rectangles: [
-        {
-          x: 10,
-          y: 10,
-          width: 721,
-          height: 1081,
-          fill: 'black',
-          name: 'rect1',
+        editBox: false,
+        image: null,
+        textData: [],
+        scale: {x:1,y:1},
+        position: {x:0,y:0},
+        textWidth:[500,500,500],
+        textHeight:[200,200,200],
+        rectangles: [
+          {
+            x: 10,
+            y: 10,
+            width: 721,
+            height: 1081,
+            fill: 'black',
+            name: 'rect1',
+          },
+        ],
+        text: {
+          stroke: 'red',
+          fontSize: '100',
+          name: 'text1',
         },
-      ],
+    
       text: {
         stroke: 'red',
         fontSize: '100',
@@ -120,18 +128,16 @@ class Main extends Component {
     let value = '';
     value = this.context;
     if (value) {
-      return value.state.textData.map (
+      return value.state.textLayers.map (
         (rect, i) => (this['input_' + i] = React.createRef ())
       );
     }
     return (this.myInput = React.createRef ());
   };
-  zoomTrigger = delta => {
-    this.setState (prevState => ({
-      scale: {x: prevState.scale.x + delta, y: prevState.scale.y + delta},
-    }));
-  };
-  handleStageMouseDown = e => {
+  zoomTrigger = (delta)=>{
+    this.setState((prevState)=>({scale:{x:prevState.scale.x+delta,y:prevState.scale.y+delta}}))
+  }
+  handleStageMouseDown = (e,i) => {
     // clicked on stage - cler selection
     if (e.target === e.target.getStage ()) {
       this.setState ({
@@ -147,21 +153,37 @@ class Main extends Component {
     }
     // find clicked object by its name
     const name = e.target.name ();
-    const rect = this.state.rectangles.find (r => r.name === name);
-    const text = this.state.text.name;
-    if (rect) {
-      this.setState ({
-        selectedShapeName: '',
-      });
-    } else if (text) {
-      this.setState ({
-        selectedShapeName: name,
-      });
-    } else {
-      this.setState ({
-        selectedShapeName: '',
-      });
-    }
+    console.log(e.target.attrs,"rectangle")
+    const transformedAttrs = e.target.attrs
+    this.setState(prevState=>{
+      const newArray = [...prevState.textWidth]
+      newArray[i]=transformedAttrs.width*transformedAttrs.scaleX
+      return {textWidth: newArray}})
+
+      this.setState(prevState=>{
+        const newArray = [...prevState.textWidth]
+        newArray[i]=transformedAttrs.height*transformedAttrs.scaleY
+        return {textHeight: newArray}})
+    // const rect = this.state.rectangles.find (r => r.name === name);
+    // const text = this.state.text.name;
+    this.setState ({
+          selectedShapeName: name,
+        });
+    // if (rect) {
+    //   this.setState ({
+    //     selectedShapeName: name,
+    //   });
+    // } 
+    // else if (text) {
+    //   this.setState ({
+    //     selectedShapeName: name,
+    //   });
+    // } 
+    // else {
+    //   this.setState ({
+    //     selectedShapeName: '',
+    //   });
+    // }
   };
   handleWheelZoom = e => {
     e.evt.preventDefault ();
@@ -184,13 +206,16 @@ class Main extends Component {
     this.setState ({position: newPos});
   };
 
-  editTextBox = i => {
+  editTextBox = (evt,key) => {
+    console.log(evt,"evttt")
+    console.log(this.node.getStage().attrs,"fd")
     this.setState ({editBox: true});
-    this['input_' + i].current.focus ();
-    this.context.onTextColorChange (i);
+    this.context.setActiveComponent(key)
+    document.getElementById(key).focus();
+    this.context.onTextColorChange(key)
   };
   onTextChange = (evt, i) => {
-    const items = this.state.textData;
+    const items = this.state.textData.i;
     items[i] = evt.target.value;
     this.setState ({textData: items});
   };
@@ -200,6 +225,9 @@ class Main extends Component {
       this.setState ({editBox: false});
     }
   };
+  handleExport=()=>{
+  this.uri = document.getElementsByTagName('canvas')[0].toDataURL('image/png')
+  }
   render () {
     const {classes} = this.props;
     this.createDynamicRef ();
@@ -211,17 +239,17 @@ class Main extends Component {
           return (
             <React.Fragment>
               <Stage
-                width={stageWidth}
-                height={stageHeight}
-                x={this.state.position.x}
-                y={this.state.position.y}
-                onMouseDown={this.handleStageMouseDown}
-                className="container"
-                scaleX={this.state.scale.x}
-                scaleY={this.state.scale.y}
-                ref={node => (this.node = node)}
-                onWheel={this.handleWheelZoom}
-                draggable
+              width={stageWidth} 
+              height={stageHeight} 
+              x={this.state.position.x} 
+              y={this.state.position.y} 
+              // onMouseDown={this.handleStageMouseDown}  
+              className='container' 
+              scaleX={this.state.scale.x} 
+              scaleY={this.state.scale.y} 
+              ref={(node)=>this.node=node} 
+              onWheel={this.handleWheelZoom} 
+              draggable
               >
                 <Layer>
                   {this.state.rectangles.map ((rect, i) => (
@@ -236,51 +264,62 @@ class Main extends Component {
                   <Transformer
                     selectedShapeName={this.state.selectedShapeName}
                   />
-                  {context.state.text.map ((rect, i) => (
+                  {context.state.textLayers.map ((key, i) => 
+                  {
+                    const {x,y,...textProps}=context.state.textObject[key]
+                    console.log(this.textRect,"textRect")
+                    return <Group  x={x} y={y} draggable>
+                    <Rect
+                     name={"textRect"+(i+1)}
+                     width={500}
+                     height={200}
+                     stroke={(context.state.is_active === key)?"#00bfff":""} 
+                     dash= {[10,15]}            
+                    //  onMouseDown={(evt)=>this.handleStageMouseDown(evt,i)}
+                     
+                    //  ref={`textRect+${i}`}
+                   />
                     <Text
                       key={i}
-                      {...rect}
-                      onClick={() => this.editTextBox (i)}
-                      draggable
-                      text={context.state.textData[i]}
+                      width={this.state.textWidth[i]}
+                      height={this.state.textHeight[i]}
+                      // ref={`text+${i}`}
+                      {...textProps}
+                      onClick={(evt) => this.editTextBox (evt,key)}
+                      text={context.state.textObject[key].textData}
+                      // wrap="char"
+                      // align="center"
+                      // width={700}
+                      // height={200}
+                      // fontSize={60}
                     />
-                  ))}
+                    </Group>
+                  })}
+                  
                 </Layer>
               </Stage>
-              {context.state.textData.map ((rect, i) => (
+              {context.state.textLayers.map ((key, i) => (
                 <React.Fragment>
                   {this.state.editBox
                     ? <input
                         key={i}
-                        ref={this['input_' + i]}
+                        id={key}
                         className={classes.invisibleInput}
                         type="text"
-                        onChange={evt => context.onTextChange (evt, i)}
-                        onKeyDown={this.keyPress}
+                        onChange={(evt )=> context.onTextChange(evt, key)}
+                        // onKeyDown={(evt,key)=>this.keyPress(evt,key)}
+                        value={context.state.textObject[key].textData}
                       />
                     : ''}
                 </React.Fragment>
               ))}
               <button onClick={() => this.createDynamicRef ()}>const</button>
               <Grid container className={classes.fixedBottom}>
-                <IconButton
-                  size="small"
-                  color=""
-                  onClick={() => {
-                    this.zoomTrigger (-0.1);
-                  }}
-                >
-                  <ZoomOut />
-                </IconButton>
-                <IconButton
-                  size="small"
-                  onClick={() => {
-                    this.zoomTrigger (0.1);
-                  }}
-                >
-                  <ZoomIn />
-                </IconButton>
-              </Grid>
+              <a href={this.uri} download="my-file-name.png">Download</a>
+            <IconButton size="small" color="" onClick={this.handleExport}><ZoomOut/></IconButton>
+            <IconButton size="small" color="" onClick={()=>{this.zoomTrigger(-0.1)}}><ZoomOut/></IconButton>
+            <IconButton size="small"  onClick={()=>{this.zoomTrigger(0.1)}}><ZoomIn/></IconButton>
+           </Grid>  
             </React.Fragment>
           );
         }}
