@@ -7,6 +7,9 @@ export default class Provider extends Component {
     selectColor: '',
     textLayers: ['textn', 'texty', 'texto'],
     is_active: '',
+    showRect:false,
+    showCircle:false,
+    showLine:false,
     textObject: {
       textn: {
         fill: 'pink',
@@ -122,6 +125,10 @@ export default class Provider extends Component {
       },
     }));
   };
+  onShapeChange = (field,value)=>{
+    this.setState({[field]:!this.state[field]})
+
+  }
   onTextChange = evt => {
     var active = this.state.is_active;
     let value = evt.target ? evt.target.value : '';
@@ -267,6 +274,7 @@ export default class Provider extends Component {
           onTextHeightChange: this.onTextHeightChange,
           onTextXChange: this.onTextXChange,
           onTextYChange: this.onTextYChange,
+          onShapeChange:this.onShapeChange
         }}
       >
         {this.props.children}

@@ -1,6 +1,7 @@
 import React, {Component,Suspense} from 'react';
 import {withStyles} from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
+import Shapes from '../ToolSelection/Shapes'
 const TextTool = React.lazy (() => import ('../ToolSelection/Text'));
 // const FlyerView = React.lazy (() => import ('../FlyerView'));
 const Background = React.lazy (() => import ('../ToolSelection/Background'));
@@ -29,7 +30,7 @@ const styles = theme => ({
 class Aside  extends Component {
     render() {
         const {classes} = this.props
-        console.log(this.props.ItemList)
+        console.log("itemlist",this.props.ItemList)
         return (
             <Paper className={classes.contentDrawer} elevation={0}>
              <div className={classes.container}>
@@ -44,6 +45,10 @@ class Aside  extends Component {
                   &&  <Suspense fallback={<div>Loading...</div>}>
                         <TextTool templateChange={this.props.templateChange} />
                       </Suspense>}
+                      {this.props.ItemList === 'Shapes'
+                  &&  
+                        <Shapes templateChange={this.props.templateChange} />
+                     }
             </div> 
             </Paper>
         );

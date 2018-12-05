@@ -62,6 +62,12 @@ class MiniSideBar extends Component {
                     </ListItemIcon>
                     <ListItemText primary="Format" className={classes.text}/>
                   </ListItem>
+                  <ListItem button className={this.props.ItemList === "Shapes"?classes.listItemSelected:classes.listItem} onClick={() => this.props.showComponent("Shapes")}>
+                    <ListItemIcon className={classes.icon} >
+                    <TextFormat  />
+                    </ListItemIcon>
+                    <ListItemText primary="Shapes" className={classes.text}/>
+                  </ListItem>
                   
               </List>
             </div>
