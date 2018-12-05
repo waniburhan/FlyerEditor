@@ -5,6 +5,7 @@ import Toolbar from '@material-ui/core/Toolbar';
 import Button from '@material-ui/core/Button';
 import GetApp from '@material-ui/icons/GetApp';
 import Export from '@material-ui/icons/OpenInBrowser';
+import {MyContext} from '../Store/Provider';
 
 const styles = theme => ({
     appBar: {
@@ -33,13 +34,15 @@ class Header extends Component {
         }
     render() {
         const {classes} = this.props
-        return (
-            <AppBar position="fixed" className={classes.appBar} color="background">
+        return (<MyContext.Consumer>
+            {(context)=>{
+            return (<AppBar position="fixed" className={classes.appBar} color="background">
           <Toolbar disableGutters={!this.state.open}>
           {this.state.uri?<Button size="small" variant="contained" color="primary" className={classes.button} component="a" href={this.state.uri} download="my-file-name.png"><GetApp/>&nbsp;Download</Button>:
-          <Button size="small" variant="contained"  color="primary" className={classes.button} onClick={this.handleExport}><Export/>&nbsp; Make Exportable</Button>}
+          <Button size="small" variant="contained"  color="primary" className={classes.button} onClick={()=>{context.resetActiveComponent();setTimeout(this.handleExport(),500);}}><Export/>&nbsp; Make Exportable</Button>}
           </Toolbar>
-        </AppBar>
+        </AppBar>)}}
+        </MyContext.Consumer>
         );
     }
 }

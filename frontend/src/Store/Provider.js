@@ -4,6 +4,8 @@ export const MyContext = React.createContext ();
 
 export default class Provider extends Component {
   state = {
+    stageWidth :(window.innerWidth - 398),
+    stageHeight : (window.innerHeight - 112),
     selectColor: '',
     textLayers: ['textn', 'texty', 'texto'],
     is_active: '',
@@ -13,15 +15,15 @@ export default class Provider extends Component {
     textObject: {
       textn: {
         fill: 'pink',
-        fontSize: 25,
+        fontSize: 27,
         fontFamily: 'arial',
         name: 'text',
         align: 'left',
         textData: 'IS YOUR TYPE 2 DIABETES MELLITUS UNCONTROLLED DESPITE TAKING METFORMIN',
-        x: 250,
-        y: 20,
-        width: 370,
-        height: 77,
+        x: 237,
+        y: 23,
+        width: 396,
+        height: 82,
       },
       texty: {
         fill: 'green',
@@ -30,8 +32,8 @@ export default class Provider extends Component {
         name: 'texty',
         align: 'left',
         textData: 'Over 10 million people in the US have a neurodegenrative condition',
-        x: 250,
-        y: 107,
+        x: 238,
+        y: 113,
         width: 364,
         height: 50,
       },
