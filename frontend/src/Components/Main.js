@@ -1,10 +1,10 @@
-import React, {Component} from 'react';
-import {Stage, Layer,Group, Rect, Text, Image,Circle, Line} from 'react-konva';
+import React, { Component } from 'react';
+import { Stage, Layer, Group, Rect, Text, Image, Circle, Line } from 'react-konva';
 import ColoredRect from './Rectangle';
 import Transformer from './TransformerComponent.js';
 import Backgrounds from '../Common/TemplateData.js';
-import {MyContext} from '../Store/Provider';
-import {withStyles} from '@material-ui/core/styles';
+import { MyContext } from '../Store/Provider';
+import { withStyles } from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
 import ZoomIn from '@material-ui/icons/ZoomIn';
@@ -18,32 +18,32 @@ class BackgroundObject extends React.Component {
     height: '',
   };
 
-  componentDidMount () {
-    const image = new window.Image ();
+  componentDidMount() {
+    const image = new window.Image();
     image.src = this.props.src;
     image.onload = () => {
       // setState will redraw layer
       // because "image" property is changed
-      this.setState ({width: image.width, height: image.height});
-      this.setState ({
+      this.setState({ width: image.width, height: image.height });
+      this.setState({
         image: image,
       });
     };
   }
-  componentWillReceiveProps (props) {
-    const image = new window.Image ();
+  componentWillReceiveProps(props) {
+    const image = new window.Image();
     image.src = props.src;
     image.onload = () => {
       // setState will redraw layer
       // because "image" property is changed
-      this.setState ({width: image.width, height: image.height});
-      this.setState ({
+      this.setState({ width: image.width, height: image.height });
+      this.setState({
         image: image,
       });
     };
   }
 
-  render () {
+  render() {
     let aspectRatio = this.state.width / this.state.height;
     return (
       <Image
@@ -68,6 +68,7 @@ const styles = theme => ({
     border: 'none',
     position: 'absolute',
     top: '30%',
+    left:"-200%",
     background: 'transparent',
     color: 'transparent',
     outline: 'none',
@@ -79,44 +80,44 @@ const styles = theme => ({
     width: 'auto',
     backgroundColor: theme.palette.background.paper,
     zIndex: 9999,
-    width:"100%",
+    width: "100%",
   },
-  range:{
+  range: {
     marginLeft: "45%",
   }
 });
 class Main extends Component {
-  constructor (props, context) {
-    super (props);
-    this.myInput = React.createRef ();
+  constructor(props, context) {
+    super(props);
+    this.myInput = React.createRef();
 
     if (context) {
-      console.log ('poolyeee');
+      console.log('poolyeee');
 
       // context.state.textData.map ((rect, i) => (this['input_' + i] = React.createRef ()  ))
     }
     // this.createDynamicRef()
     this.state = {
-        image: null,
-        textData: [],
-        scale: {x:1,y:1},
-        position: {x:0,y:0},
-        rectangles: [
-          {
-            x: 10,
-            y: 10,
-            width: 721,
-            height: 1081,
-            fill: 'black',
-            name: 'rect1',
-          },
-        ],
-        text: {
-          stroke: 'red',
-          fontSize: '100',
-          name: 'text1',
+      image: null,
+      textData: [],
+      scale: { x: 1, y: 1 },
+      position: { x: 0, y: 0 },
+      rectangles: [
+        {
+          x: 10,
+          y: 10,
+          width: 721,
+          height: 1081,
+          fill: 'black',
+          name: 'rect1',
         },
-    
+      ],
+      text: {
+        stroke: 'red',
+        fontSize: '100',
+        name: 'text1',
+      },
+
       text: {
         stroke: 'red',
         fontSize: '100',
@@ -140,25 +141,28 @@ class Main extends Component {
   //   return (this.myInput = React.createRef ());
   // };
 
-  componentDidMount(){
-    window.addEventListener("keydown",(e)=>{
-      if (e.keyCode === 27){
-        this.context.state.is_active && this.context.resetActiveComponent()
+  componentDidMount() {
+    window.addEventListener("keydown", (e) => {
+      if (e.keyCode === 27) {
+        this.context.state.is_active && this.context.resetActiveComponent();
+        this.setState({
+          selectedShapeName: ''
+        });
       }
-     },false)
+    }, false)
   }
-  zoomTrigger = (delta)=>{
-    this.setState((prevState)=>({scale:{x:prevState.scale.x+delta,y:prevState.scale.y+delta}}))
-    this.setState((prevState)=>({position:{x:prevState.position.x-(delta*430),y:prevState.position.y-(delta*330)}}))
+  zoomTrigger = (delta) => {
+    this.setState((prevState) => ({ scale: { x: prevState.scale.x + delta, y: prevState.scale.y + delta } }))
+    this.setState((prevState) => ({ position: { x: prevState.position.x - (delta * 430), y: prevState.position.y - (delta * 330) } }))
   }
-  handleStageClick = ()=>{
+  handleStageClick = () => {
     // this.context.resetActiveComponent()
   }
-  handleStageMouseDown = (e,i) => {
-    console.log(e.target.name (),"trans")
+  handleStageMouseDown = (e, i) => {
+    console.log(e.target.name(), "trans")
     // clicked on stage - cler selection
-    if (e.target === e.target.getStage ()) {
-      this.setState ({
+    if (e.target === e.target.getStage()) {
+      this.setState({
         selectedShapeName: ''
       });
       // console.log(this.context.resetActiveComponent(),"clicked stage")
@@ -166,15 +170,15 @@ class Main extends Component {
     }
     // clicked on transformer - do nothing
     const clickedOnTransformer =
-      e.target.getParent ().className === 'Transformer';
+      e.target.getParent().className === 'Transformer';
     if (clickedOnTransformer) {
       return;
     }
 
     // find clicked rect by its name
-    const name = e.target.name ();
+    const name = e.target.name();
 
-    
+
     // const transformedAttrs = e.target.attrs
 
     //trial for transform change
@@ -189,9 +193,9 @@ class Main extends Component {
     //     return {textHeight: newArray}})
     // const rect = this.state.rectangles.find (r => r.name === name);
     // const text = this.state.text.name;
-    this.setState ({
-          selectedShapeName: name,
-        });
+    this.setState({
+      selectedShapeName: name,
+    });
     // if (rect) {
     //   this.setState ({
     //     selectedShapeName: name,
@@ -209,8 +213,8 @@ class Main extends Component {
     // }
   };
   handleWheelZoom = e => {
-    e.evt.preventDefault ();
-    var stage = this.node.getStage ().attrs;
+    e.evt.preventDefault();
+    var stage = this.node.getStage().attrs;
     var scaleBy = 1.01;
     var oldScale = stage.scaleX;
 
@@ -220,16 +224,16 @@ class Main extends Component {
     };
 
     var newScale = e.evt.deltaY > 0 ? oldScale * scaleBy : oldScale / scaleBy;
-    this.setState ({scale: {x: newScale, y: newScale}});
+    this.setState({ scale: { x: newScale, y: newScale } });
 
     var newPos = {
       x: -(mousePointTo.x - (e.evt.x - 398) / newScale) * newScale,
       y: -(mousePointTo.y - (e.evt.y - 112) / newScale) * newScale,
     };
-    this.setState ({position: newPos});
+    this.setState({ position: newPos });
   };
 
-  editTextBox = (evt,key) => {
+  editTextBox = (evt, key) => {
     this.context.setActiveComponent(key)
     document.getElementById(key).focus();
     this.context.onTextColorChange(key)
@@ -237,127 +241,126 @@ class Main extends Component {
   onTextChange = (evt, i) => {
     const items = this.state.textData.i;
     items[i] = evt.target.value;
-    this.setState ({textData: items});
+    this.setState({ textData: items });
   };
-  getXY = (e) =>{
-    this.context.onTextXChange(null,e.target.attrs.x)
-    this.context.onTextYChange(null,e.target.attrs.y)
+  getXY = (e) => {
+    this.context.onTextXChange(null, e.target.attrs.x)
+    this.context.onTextYChange(null, e.target.attrs.y)
   }
-  render () {
-    const {classes} = this.props;
+  render() {
+    const { classes } = this.props;
     return (
-        <MyContext.Consumer>
-          {context => {
-            return (<React.Fragment>
-              <Stage
-              width={context.state.stageWidth} 
-              height={context.state.stageHeight} 
-              x={this.state.position.x} 
-              y={this.state.position.y} 
+      <MyContext.Consumer>
+        {context => {
+          return (<React.Fragment>
+            <Stage
+              width={context.state.stageWidth}
+              height={context.state.stageHeight}
+              x={this.state.position.x}
+              y={this.state.position.y}
               // onMouseDown={this.handleStageMouseDown}  
               onClick={this.handleStageClick}
-              className='container' 
-              scaleX={this.state.scale.x} 
-              scaleY={this.state.scale.y} 
-              ref={(node)=>this.node=node} 
-              onWheel={this.handleWheelZoom} 
+              className='container'
+              scaleX={this.state.scale.x}
+              scaleY={this.state.scale.y}
+              ref={(node) => this.node = node}
+              onWheel={this.handleWheelZoom}
               draggable
-              > 
-                <Layer>
-                  {this.state.rectangles.map ((rect, i) => (
-                    <BackgroundObject
-                    stageWidth={context.state.stageWidth} 
-                    stageHeight={context.state.stageHeight} 
-                      key={i}
-                      {...rect}
-                      src={this.props.selectedBackground}
-                    />
-                  ))}
-                  <Transformer
-                    selectedShapeName={this.state.selectedShapeName}
+            >
+              <Layer>
+                {this.state.rectangles.map((rect, i) => (
+                  <BackgroundObject
+                    stageWidth={context.state.stageWidth}
+                    stageHeight={context.state.stageHeight}
+                    key={i}
+                    {...rect}
+                    src={this.props.selectedBackground}
                   />
-                  {context.state.textLayers.map ((key, i) => 
-                  {
-                    const {x,y,...textProps}=context.state.textObject[key]
-                    const draggable = key === context.state.is_active?true:false
-                    console.log(draggable,"draggable")
-                    return <Group  x={x} y={y} draggable={draggable} onDragEnd={this.getXY}>
+                ))}
+                <Transformer
+                  selectedShapeName={this.state.selectedShapeName}
+                />
+                {context.state.textLayers.map((key, i) => {
+                  const { x, y, ...textProps } = context.state.textObject[key]
+                  const draggable = key === context.state.is_active ? true : false
+                  console.log(draggable, "draggable")
+                  return <Group x={x} y={y} draggable={draggable} onDragEnd={this.getXY}>
                     <Rect
-                     name={"textRect"+(i+1)}
-                     width={context.state.textObject[key].width}
-                     height={context.state.textObject[key].height}
-                     stroke={(context.state.is_active === key)?"#0fb4bb":""} 
+                      name={"textRect" + (i + 1)}
+                      width={context.state.textObject[key].width}
+                      height={context.state.textObject[key].height}
+                      stroke={(context.state.is_active === key) ? "#0fb4bb" : ""}
                     //  onMouseDown={this.handleStageMouseDown}
-                     
+
                     //  ref={`textRect+${i}`}
-                   />
+                    />
                     <Text
                       key={i}
                       width={context.state.textObject[key].textWidth}
                       height={context.state.textObject[key].textHeight}
                       // ref={`text+${i}`}
                       {...textProps}
-                      onClick={()=>console.log(context.state.showRect,"context.state.showRect")}
+                      onClick={(evt) => this.editTextBox(evt, key)}
                       text={context.state.textObject[key].textData}
-                      // wrap="char"
-                      // align="center"
-                      // width={700}
-                      // height={200}
-                      // fontSize={60}
+                    // wrap="char"
+                    // align="center"
+                    // width={700}
+                    // height={200}
+                    // fontSize={60}
                     />
-                    </Group>
-                  })}
-             {context.state.showRect? <Rect
-                x={20}
-                y={50}
-                width={100}
-                height={100}
-                fill="red"
-                shadowBlur={10}
-                name="rect"
-                draggable
-                onMouseDown={this.handleStageMouseDown}  
+                  </Group>
+                })}
+                {context.state.showRect ? <Rect
+                  x={20}
+                  y={50}
+                  width={100}
+                  height={100}
+                  fill="red"
+                  shadowBlur={10}
+                  name="rect"
+                  draggable
+                  onMouseDown={this.handleStageMouseDown}
 
 
-              />:null}
-              {context.state.showCircle?  <Circle x={200} y={100} radius={50} fill="green" name="circle" onMouseDown={this.handleStageMouseDown} draggable/> :null}
-              {context.state.showLine?  <Line
-              onMouseDown={this.handleStageMouseDown}
-              draggable
-                x={20}
-                y={200}
-                points={[0, 0, 100, 0, 100, 100]}
-                tension={0.5}
-                closed
-                stroke="black"
-                name="line"
-                fillLinearGradientStartPoint={{ x: -50, y: -50 }}
-                fillLinearGradientEndPoint={{ x: 50, y: 50 }}
-                fillLinearGradientColorStops={[0, 'red', 1, 'yellow']}
-              /> :null}
-            
-                </Layer>
+                /> : null}
+                {context.state.showCircle ? <Circle x={200} y={100} radius={50} fill="green" name="circle" onMouseDown={this.handleStageMouseDown} draggable /> : null}
+                {context.state.showLine ? <Line
+                  onMouseDown={this.handleStageMouseDown}
+                  draggable
+                  x={20}
+                  y={200}
+                  points={[0, 0, 100, 0, 100, 100]}
+                  tension={0.5}
+                  closed
+                  stroke="black"
+                  name="line"
+                  fillLinearGradientStartPoint={{ x: -50, y: -50 }}
+                  fillLinearGradientEndPoint={{ x: 50, y: 50 }}
+                  fillLinearGradientColorStops={[0, 'red', 1, 'yellow']}
+                /> : null}
 
-              </Stage>
-              {context.state.textLayers.map ((key, i) => (
-                <React.Fragment>
-                        <input
-                        key={i}
-                        id={key}
-                        className={classes.invisibleInput}
-                        type="text"
-                        onChange={context.onTextChange}
-                        // onKeyDown={(evt,key)=>this.keyPress(evt,key)}
-                        value={context.state.textObject[key].textData}
-                      />
-                </React.Fragment>
-              ))}
-              <Grid container className={classes.fixedBottom}>
-            <IconButton className={classes.range} size="small" color="" onClick={()=>{this.zoomTrigger(-0.2)}}><ZoomOut/></IconButton>
-            <Range zoomTrigger={this.zoomTrigger}/>
-            <IconButton size="small"  onClick={()=>{this.zoomTrigger(0.2)}}><ZoomIn/></IconButton>
-           </Grid>  
-            </React.Fragment>
+              </Layer>
+
+            </Stage>
+            {context.state.textLayers.map((key, i) => (
+              <React.Fragment>
+                <input
+                  key={i}
+                  id={key}
+                  className={classes.invisibleInput}
+                  type="text"
+                  onChange={context.onTextChange}
+                  // onKeyDown={(evt,key)=>this.keyPress(evt,key)}
+                  value={context.state.textObject[key].textData}
+                />
+              </React.Fragment>
+            ))}
+            <Grid container className={classes.fixedBottom}>
+              <IconButton className={classes.range} size="small" color="" onClick={() => { this.zoomTrigger(-0.2) }}><ZoomOut /></IconButton>
+              <Range zoomTrigger={this.zoomTrigger} />
+              <IconButton size="small" onClick={() => { this.zoomTrigger(0.2) }}><ZoomIn /></IconButton>
+            </Grid>
+          </React.Fragment>
           );
         }}
 
@@ -369,7 +372,7 @@ class Main extends Component {
 
 Main.contextType = MyContext;
 
-export default withStyles (styles) (Main);
+export default withStyles(styles)(Main);
 // export default withStyles (styles)(props => ( <MyContext.Consumer>
 //   {({context}) => {
 //      return <Main {...props} context={context}/>

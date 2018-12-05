@@ -6,6 +6,7 @@ import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
 import ListItemText from '@material-ui/core/ListItemText';
 import TextFormat from '@material-ui/icons/TextFields';
+import FormatShapes from '@material-ui/icons/FormatShapes';
 
 const styles = theme => ({
     iconDrawer: {
@@ -64,7 +65,7 @@ class MiniSideBar extends Component {
                   </ListItem>
                   <ListItem button className={this.props.ItemList === "Shapes"?classes.listItemSelected:classes.listItem} onClick={() => this.props.showComponent("Shapes")}>
                     <ListItemIcon className={classes.icon} >
-                    <TextFormat  />
+                    <FormatShapes  />
                     </ListItemIcon>
                     <ListItemText primary="Shapes" className={classes.text}/>
                   </ListItem>

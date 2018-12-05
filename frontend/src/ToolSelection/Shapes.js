@@ -13,6 +13,7 @@ const styles = theme => ({
   root: {
     display: "flex",
     flexWrap: "wrap",
+    flexDirection:"column",
     justifyContent: "space-around",
     overflow: "hidden",
     // backgroundColor:"rgba(0,0,0,0.12)"
@@ -48,12 +49,10 @@ class Shapes extends React.Component {
          <Button variant="outlined"  className={classes.button} onClick={()=>context.onShapeChange("showRect")} >
         Rectangle
       </Button>
-      <br/>
-      <Button variant="outlined" color="primary" className={classes.button} onClick={()=>context.onShapeChange("showCircle")} >
+      <Button variant="outlined"  className={classes.button} onClick={()=>context.onShapeChange("showCircle")} >
         Circle
       </Button>
-      <br/>
-      <Button variant="outlined" color="primary" className={classes.button} onClick={()=>context.onShapeChange("showLine")} >
+      <Button variant="outlined" className={classes.button} onClick={()=>context.onShapeChange("showLine")} >
         Line
       </Button>
 
