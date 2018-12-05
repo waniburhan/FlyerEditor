@@ -1,5 +1,5 @@
 import React, {Component} from 'react';
-import {Stage, Layer,Group, Rect, Text, Image} from 'react-konva';
+import {Stage, Layer,Group, Rect, Text, Image,Circle, Line} from 'react-konva';
 import ColoredRect from './Rectangle';
 import Transformer from './TransformerComponent.js';
 import Backgrounds from '../Common/TemplateData.js';
@@ -173,6 +173,7 @@ class Main extends Component {
 
     // find clicked rect by its name
     const name = e.target.name ();
+
     
     // const transformedAttrs = e.target.attrs
 
@@ -261,7 +262,7 @@ class Main extends Component {
               ref={(node)=>this.node=node} 
               onWheel={this.handleWheelZoom} 
               draggable
-              >
+              > 
                 <Layer>
                   {this.state.rectangles.map ((rect, i) => (
                     <BackgroundObject
@@ -296,7 +297,7 @@ class Main extends Component {
                       height={context.state.textObject[key].textHeight}
                       // ref={`text+${i}`}
                       {...textProps}
-                      onClick={(evt) => this.editTextBox (evt,key)}
+                      onClick={()=>console.log(context.state.showRect,"context.state.showRect")}
                       text={context.state.textObject[key].textData}
                       // wrap="char"
                       // align="center"
@@ -306,8 +307,37 @@ class Main extends Component {
                     />
                     </Group>
                   })}
-                  
+             {context.state.showRect? <Rect
+                x={20}
+                y={50}
+                width={100}
+                height={100}
+                fill="red"
+                shadowBlur={10}
+                name="rect"
+                draggable
+                onMouseDown={this.handleStageMouseDown}  
+
+
+              />:null}
+              {context.state.showCircle?  <Circle x={200} y={100} radius={50} fill="green" name="circle" onMouseDown={this.handleStageMouseDown} draggable/> :null}
+              {context.state.showLine?  <Line
+              onMouseDown={this.handleStageMouseDown}
+              draggable
+                x={20}
+                y={200}
+                points={[0, 0, 100, 0, 100, 100]}
+                tension={0.5}
+                closed
+                stroke="black"
+                name="line"
+                fillLinearGradientStartPoint={{ x: -50, y: -50 }}
+                fillLinearGradientEndPoint={{ x: 50, y: 50 }}
+                fillLinearGradientColorStops={[0, 'red', 1, 'yellow']}
+              /> :null}
+            
                 </Layer>
+
               </Stage>
               {context.state.textLayers.map ((key, i) => (
                 <React.Fragment>
