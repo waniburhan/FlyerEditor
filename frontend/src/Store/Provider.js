@@ -1,61 +1,106 @@
-import React, { Suspense, Component } from 'react';
+import React, {Suspense, Component} from 'react';
 
-export const MyContext = React.createContext();
+export const MyContext = React.createContext ();
 
 export default class Provider extends Component {
   state = {
     stageWidth :(window.innerWidth - 398),
     stageHeight : (window.innerHeight - 112),
     selectColor: '',
-    textLayers: [
-      "textn",
-      "texty",
-      "texto"
-    ],
-    is_active:"",
-    textObject:{
+    textLayers: ['textn', 'texty', 'texto'],
+    is_active: '',
+    textObject: {
       textn: {
         fill: 'pink',
-        fontSize: 25,
-        fontFamily: "arial",
+        fontSize: 27,
+        fontFamily: 'arial',
         name: 'text',
-        align: "left",
-        textData: "IS YOUR TYPE 2 DIABETES MELLITUS UNCONTROLLED DESPITE TAKING METFORMIN",
-        x:250,
-        y: 20,
-        width: 370,
-        height: 77,
-
+        align: 'left',
+        textData: 'IS YOUR TYPE 2 DIABETES MELLITUS UNCONTROLLED DESPITE TAKING METFORMIN',
+        x: 237,
+        y: 23,
+        width: 396,
+        height: 82,
       },
       texty: {
         fill: 'green',
         fontSize: 8,
-        fontFamily: "roboto",
+        fontFamily: 'roboto',
         name: 'texty',
-        align: "left",
-        textData: "Over 10 million people in the US have a neurodegenrative condition",
-        x:250,
-        y: 107,
+        align: 'left',
+        textData: 'Over 10 million people in the US have a neurodegenrative condition',
+        x: 238,
+        y: 113,
         width: 364,
         height: 50,
       },
       texto: {
-        fill: 'orange',
+        c: 'orange',
         fontSize: 15,
-        fontFamily: "helvetica neue",
+        fontFamily: 'helvetica neue',
         name: 'texto',
-        align: "right",
-        textData: "Blessed i am",
-        x:400,
+        align: 'right',
+        textData: 'Blessed i am',
+        x: 400,
         y: 700,
         width: 500,
         height: 200,
       },
     },
+
+    template: {
+      template1: {
+        name: 'untitiled 1',
+        background:{
+          x:"",
+          y:"",
+          src:""
+        },
+        LayersList: ['textn', 'texty', 'texto'],
+        layersData: {
+          textn: {
+            fill: 'pink',
+            fontSize: 25,
+            fontFamily: 'arial',
+            name: 'text',
+            align: 'left',
+            textData: 'IS YOUR TYPE 2 DIABETES MELLITUS UNCONTROLLED DESPITE TAKING METFORMIN',
+            x: 250,
+            y: 20,
+            width: 370,
+            height: 77,
+          },
+          texty: {
+            fill: 'green',
+            fontSize: 8,
+            fontFamily: 'roboto',
+            name: 'texty',
+            align: 'left',
+            textData: 'Over 10 million people in the US have a neurodegenrative condition',
+            x: 250,
+            y: 107,
+            width: 364,
+            height: 50,
+          },
+          texto: {
+            fill: 'orange',
+            fontSize: 15,
+            fontFamily: 'helvetica neue',
+            name: 'texto',
+            align: 'right',
+            textData: 'Blessed i am',
+            x: 400,
+            y: 700,
+            width: 500,
+            height: 200,
+          },
+        },
+      },
+    },
     // textData: ['hi there', 'hello', 'timbaktu'],
   };
   addField = i => {
-    var active =  this.state.is_active
+    var active = this.state.is_active;
     var font = '';
     if (i == 'h1') {
       font = 100;
@@ -68,152 +113,151 @@ export default class Provider extends Component {
     } else {
       font = 30;
     }
-    this.setState(prevState => ({
+    this.setState (prevState => ({
       ...prevState,
       textObject: {
-          ...prevState.textObject,
-          [active]: {
-              ...prevState.textObject[active], 
-              fontSize: font
-          }
-      }
-  }))
+        ...prevState.textObject,
+        [active]: {
+          ...prevState.textObject[active],
+          fontSize: font,
+        },
+      },
+    }));
   };
-  onTextChange = (evt) => {
-    var active =  this.state.is_active
-    let value = evt.target?evt.target.value:""
-    this.setState(prevState => ({
+  onTextChange = evt => {
+    var active = this.state.is_active;
+    let value = evt.target ? evt.target.value : '';
+    this.setState (prevState => ({
       ...prevState,
       textObject: {
-          ...prevState.textObject,
-          [active]: {
-              ...prevState.textObject[active], 
-              textData: value
-          }
-      }
-  }))
-    
+        ...prevState.textObject,
+        [active]: {
+          ...prevState.textObject[active],
+          textData: value,
+        },
+      },
+    }));
   };
   onTextColorChange = i => {
-    this.setState({ selectColor: i });
+    this.setState ({selectColor: i});
   };
   onTextSizeChange = evt => {
-    var active =  this.state.is_active
-    let value = evt.target?Number(evt.target.value):""
-    this.setState(prevState => ({
+    var active = this.state.is_active;
+    let value = evt.target ? Number (evt.target.value) : '';
+    this.setState (prevState => ({
       ...prevState,
       textObject: {
-          ...prevState.textObject,
-          [active]: {
-              ...prevState.textObject[active], 
-              fontSize: value
-          }
-      }
-  }))
+        ...prevState.textObject,
+        [active]: {
+          ...prevState.textObject[active],
+          fontSize: value,
+        },
+      },
+    }));
   };
   onTextWidthChange = evt => {
-    var active =  this.state.is_active
-    let value = evt.target?Number(evt.target.value):""
-    this.setState(prevState => ({
+    var active = this.state.is_active;
+    let value = evt.target ? Number (evt.target.value) : '';
+    this.setState (prevState => ({
       ...prevState,
       textObject: {
-          ...prevState.textObject,
-          [active]: {
-              ...prevState.textObject[active], 
-              width: value
-          }
-      }
-  }))
+        ...prevState.textObject,
+        [active]: {
+          ...prevState.textObject[active],
+          width: value,
+        },
+      },
+    }));
   };
   onTextHeightChange = evt => {
-    var active =  this.state.is_active
-    let value = evt.target?Number(evt.target.value):""
-    this.setState(prevState => ({
+    var active = this.state.is_active;
+    let value = evt.target ? Number (evt.target.value) : '';
+    this.setState (prevState => ({
       ...prevState,
       textObject: {
-          ...prevState.textObject,
-          [active]: {
-              ...prevState.textObject[active], 
-              height: value
-          }
-      }
-  }))
+        ...prevState.textObject,
+        [active]: {
+          ...prevState.textObject[active],
+          height: value,
+        },
+      },
+    }));
   };
   onTextVariantChange = (evt, variant) => {
-    var active =  this.state.is_active
-    let value = evt.target?evt.target.value:""
-    this.setState(prevState => ({
+    var active = this.state.is_active;
+    let value = evt.target ? evt.target.value : '';
+    this.setState (prevState => ({
       ...prevState,
       textObject: {
-          ...prevState.textObject,
-          [active]: {
-              ...prevState.textObject[active], 
-              fontFamily: value
-          }
-      }
-  }))
+        ...prevState.textObject,
+        [active]: {
+          ...prevState.textObject[active],
+          fontFamily: value,
+        },
+      },
+    }));
   };
-  onTextAligmnentChange = (evt) => {
-    var active =  this.state.is_active
-    let value = evt.target?evt.target.value:""
-    this.setState(prevState => ({
+  onTextAligmnentChange = evt => {
+    var active = this.state.is_active;
+    let value = evt.target ? evt.target.value : '';
+    this.setState (prevState => ({
       ...prevState,
       textObject: {
-          ...prevState.textObject,
-          [active]: {
-              ...prevState.textObject[active], 
-              align: value
-          }
-      }
-  }))
-  }
+        ...prevState.textObject,
+        [active]: {
+          ...prevState.textObject[active],
+          align: value,
+        },
+      },
+    }));
+  };
   Color = color => {
     const items = this.state.textObject;
-    console.log(items, "asdfghjk")
+    console.log (items, 'asdfghjk');
     items[this.state.selectColor].fill = color;
-    this.setState({ text: items });
+    this.setState ({text: items});
   };
-  onTextXChange = (evt,dragdata)=>{
-    var active =  this.state.is_active
-    let value = evt?evt.target?Number(evt.target.value):"":dragdata
-    this.setState(prevState => ({
+  onTextXChange = (evt, dragdata) => {
+    var active = this.state.is_active;
+    let value = evt ? (evt.target ? Number (evt.target.value) : '') : dragdata;
+    this.setState (prevState => ({
       ...prevState,
       textObject: {
-          ...prevState.textObject,
-          [active]: {
-              ...prevState.textObject[active], 
-              x: value
-          }
-      }
-  }))
-  }
-  onTextYChange = (evt,dragdata)=>{
-    var active =  this.state.is_active
-    let value = evt?evt.target?Number(evt.target.value):"":dragdata
-    this.setState(prevState => ({
+        ...prevState.textObject,
+        [active]: {
+          ...prevState.textObject[active],
+          x: value,
+        },
+      },
+    }));
+  };
+  onTextYChange = (evt, dragdata) => {
+    var active = this.state.is_active;
+    let value = evt ? (evt.target ? Number (evt.target.value) : '') : dragdata;
+    this.setState (prevState => ({
       ...prevState,
       textObject: {
-          ...prevState.textObject,
-          [active]: {
-              ...prevState.textObject[active], 
-              y: value
-          }
-      }
-  }))
-  }
-  setActiveComponent = (key)=>{
-    this.setState({is_active:key})
-  }
-  resetActiveComponent = ()=>{
-    this.setState({is_active:""})
-  }
-  render() {
+        ...prevState.textObject,
+        [active]: {
+          ...prevState.textObject[active],
+          y: value,
+        },
+      },
+    }));
+  };
+  setActiveComponent = key => {
+    this.setState ({is_active: key});
+  };
+  resetActiveComponent = () => {
+    this.setState ({is_active: ''});
+  };
+  render () {
     return (
       <MyContext.Provider
         value={{
           state: this.state,
           addField: this.addField,
-          setActiveComponent:this.setActiveComponent,
+          setActiveComponent: this.setActiveComponent,
           resetActiveComponent: this.resetActiveComponent,
           onTextChange: this.onTextChange,
           onTextColorChange: this.onTextColorChange,
@@ -224,7 +268,7 @@ export default class Provider extends Component {
           onTextWidthChange: this.onTextWidthChange,
           onTextHeightChange: this.onTextHeightChange,
           onTextXChange: this.onTextXChange,
-          onTextYChange: this.onTextYChange
+          onTextYChange: this.onTextYChange,
         }}
       >
         {this.props.children}

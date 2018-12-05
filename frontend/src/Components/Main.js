@@ -9,25 +9,32 @@ import Grid from '@material-ui/core/Grid';
 import IconButton from '@material-ui/core/IconButton';
 import ZoomIn from '@material-ui/icons/ZoomIn';
 import ZoomOut from '@material-ui/icons/ZoomOut';
+import Range from "../Common/Slider.js"
 
 class BackgroundObject extends React.Component {
   state = {
     image: null,
-    width: "",
-    height: ""
+    width: '',
+    height: '',
   };
 
   componentDidMount () {
+    console.log(this.context,"context")
     const image = new window.Image ();
     image.src = this.props.src;
     image.onload = () => {
       // setState will redraw layer
       // because "image" property is changed
-      this.setState({width: image.width,height:image.height})
+      this.setState ({width: image.width, height: image.height});
       this.setState ({
         image: image,
       });
     };
+    window.addEventListener("keydown",(e)=>{
+     if (e.keyCode === 27){
+      this.context.resetActiveComponent()
+     }
+    },false)
   }
   componentWillReceiveProps (props) {
     const image = new window.Image ();
@@ -35,7 +42,7 @@ class BackgroundObject extends React.Component {
     image.onload = () => {
       // setState will redraw layer
       // because "image" property is changed
-      this.setState({width: image.width,height:image.height})
+      this.setState ({width: image.width, height: image.height});
       this.setState ({
         image: image,
       });
@@ -43,13 +50,13 @@ class BackgroundObject extends React.Component {
   }
 
   render () {
-    let aspectRatio = this.state.width/this.state.height
+    let aspectRatio = this.state.width / this.state.height;
     return (
       <Image
-        x={this.props.stageWidth/2 - (this.props.stageHeight * aspectRatio)/2}
+        x={this.props.stageWidth / 2 - this.props.stageHeight * aspectRatio / 2}
         y={this.props.stageHeight - this.props.stageHeight}
-        width = {this.props.stageHeight * aspectRatio}
-        height = {this.props.stageHeight}
+        width={this.props.stageHeight * aspectRatio}
+        height={this.props.stageHeight}
         fill={this.props.fill}
         name={this.props.name}
         image={this.state.image}
@@ -71,13 +78,17 @@ const styles = theme => ({
     color: 'transparent',
     outline: 'none',
   },
-  fixedBottom:{
-    position: "fixed",
+  fixedBottom: {
+    position: 'fixed',
     bottom: 0,
     right: 0,
-    width: "auto",
+    width: 'auto',
     backgroundColor: theme.palette.background.paper,
-    zIndex: 9999
+    zIndex: 9999,
+    width:"100%",
+  },
+  range:{
+    marginLeft: "45%",
   }
 });
 class Main extends Component {
@@ -112,10 +123,16 @@ class Main extends Component {
           fontSize: '100',
           name: 'text1',
         },
-        selectedShapeName: '',
-      
+    
+      text: {
+        stroke: 'red',
+        fontSize: '100',
+        name: 'text1',
+      },
+      selectedShapeName: '',
+    };
   }
-}
+
   // createDynamicRef = () => {
   //   let value = '';
   //   value = this.context;
@@ -189,27 +206,26 @@ class Main extends Component {
     //   });
     // }
   };
-  handleWheelZoom=(e)=>{
-    e.evt.preventDefault();
-    var stage = this.node.getStage().attrs;
+  handleWheelZoom = e => {
+    e.evt.preventDefault ();
+    var stage = this.node.getStage ().attrs;
     var scaleBy = 1.01;
     var oldScale = stage.scaleX;
 
     var mousePointTo = {
-        x: (e.evt.x-398) / oldScale - stage.x / oldScale,
-        y: (e.evt.y-112 )/ oldScale - stage.y / oldScale,
+      x: (e.evt.x - 398) / oldScale - stage.x / oldScale,
+      y: (e.evt.y - 112) / oldScale - stage.y / oldScale,
     };
 
     var newScale = e.evt.deltaY > 0 ? oldScale * scaleBy : oldScale / scaleBy;
-    this.setState({scale:{ x: newScale, y: newScale }})
+    this.setState ({scale: {x: newScale, y: newScale}});
 
     var newPos = {
-        x: -(mousePointTo.x - (e.evt.x-398) / newScale) * newScale,
-        y: -(mousePointTo.y - (e.evt.y - 112) / newScale) * newScale
+      x: -(mousePointTo.x - (e.evt.x - 398) / newScale) * newScale,
+      y: -(mousePointTo.y - (e.evt.y - 112) / newScale) * newScale,
     };
-    this.setState({position:newPos})
-
-  }
+    this.setState ({position: newPos});
+  };
 
   editTextBox = (evt,key) => {
     console.log(evt,)
@@ -307,18 +323,20 @@ class Main extends Component {
                 </React.Fragment>
               ))}
               <Grid container className={classes.fixedBottom}>
-            <IconButton size="small" color="" onClick={()=>{this.zoomTrigger(-0.2)}}><ZoomOut/></IconButton>
+            <IconButton className={classes.range} size="small" color="" onClick={()=>{this.zoomTrigger(-0.2)}}><ZoomOut/></IconButton>
+            <Range zoomTrigger={this.zoomTrigger}/>
             <IconButton size="small"  onClick={()=>{this.zoomTrigger(0.2)}}><ZoomIn/></IconButton>
            </Grid>  
             </React.Fragment>
-           
-            )
-          }}
-           
-        </MyContext.Consumer>
-    );
-  }
+          );
+        }}
+
+      </MyContext.Consumer>
+    )
+  };
 }
+
+
 Main.contextType = MyContext;
 
-export default withStyles(styles)(Main);
+export default withStyles (styles) (Main);
