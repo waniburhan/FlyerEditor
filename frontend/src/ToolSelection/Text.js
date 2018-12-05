@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemText from '@material-ui/core/ListItemText';
+
 import Divider from '@material-ui/core/Divider';
 import Grid from '@material-ui/core/Grid';
 import {MyContext} from '../Store/Provider';
@@ -14,6 +15,7 @@ import Select from '@material-ui/core/Select';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import TextField from '@material-ui/core/TextField';
 import classNames from 'classnames';
+import { Typography } from '@material-ui/core';
 const styles = theme => ({
   colors: {
     display: "inline-block",
@@ -127,6 +129,12 @@ class TextTool extends Component {
                 className={classes.colors}
                 style={{backgroundColor: 'grey '}}
               />
+               {' '}
+              <div
+                onClick={() => context.Color ('#18637a')}
+                className={classes.colors}
+                style={{backgroundColor: '#18637a '}}
+              />
 
             </div>
 
@@ -233,7 +241,7 @@ class TextTool extends Component {
             
           </Select>
         </FormControl>
-        </React.Fragment>:<div>Please select the text box</div>}
+        </React.Fragment>:<Typography variant="subtitle1">Please select the text box</Typography>}
           </div>
         }}
       </MyContext.Consumer>

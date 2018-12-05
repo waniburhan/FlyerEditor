@@ -277,6 +277,19 @@ class Main extends Component {
                     src={this.props.selectedBackground}
                   />
                 ))}
+                {context.state.showRect ? <Rect
+                  x={20}
+                  y={50}
+                  width={100}
+                  height={100}
+                  fill="red"
+                  shadowBlur={10}
+                  name="rect"
+                  draggable
+                  onMouseDown={this.handleStageMouseDown}
+
+
+                /> : null}
                 <Transformer
                   selectedShapeName={this.state.selectedShapeName}
                 />
@@ -310,19 +323,7 @@ class Main extends Component {
                     />
                   </Group>
                 })}
-                {context.state.showRect ? <Rect
-                  x={20}
-                  y={50}
-                  width={100}
-                  height={100}
-                  fill="red"
-                  shadowBlur={10}
-                  name="rect"
-                  draggable
-                  onMouseDown={this.handleStageMouseDown}
-
-
-                /> : null}
+                
                 {context.state.showCircle ? <Circle x={200} y={100} radius={50} fill="green" name="circle" onMouseDown={this.handleStageMouseDown} draggable /> : null}
                 {context.state.showLine ? <Line
                   onMouseDown={this.handleStageMouseDown}

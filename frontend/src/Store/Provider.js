@@ -17,6 +17,7 @@ export default class Provider extends Component {
         fill: 'pink',
         fontSize: 27,
         fontFamily: 'arial',
+        fontStyle:"bold",
         name: 'text',
         align: 'left',
         textData: 'IS YOUR TYPE 2 DIABETES MELLITUS UNCONTROLLED DESPITE TAKING METFORMIN',
