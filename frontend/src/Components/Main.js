@@ -19,7 +19,6 @@ class BackgroundObject extends React.Component {
   };
 
   componentDidMount () {
-    console.log(this.context,"context")
     const image = new window.Image ();
     image.src = this.props.src;
     image.onload = () => {
@@ -30,11 +29,6 @@ class BackgroundObject extends React.Component {
         image: image,
       });
     };
-    window.addEventListener("keydown",(e)=>{
-     if (e.keyCode === 27){
-      this.context.resetActiveComponent()
-     }
-    },false)
   }
   componentWillReceiveProps (props) {
     const image = new window.Image ();
@@ -95,7 +89,6 @@ class Main extends Component {
   constructor (props, context) {
     super (props);
     this.myInput = React.createRef ();
-    console.log (context, 'poolyeee');
 
     if (context) {
       console.log ('poolyeee');
@@ -146,6 +139,14 @@ class Main extends Component {
 
   //   return (this.myInput = React.createRef ());
   // };
+
+  componentDidMount(){
+    window.addEventListener("keydown",(e)=>{
+      if (e.keyCode === 27){
+        this.context.state.is_active && this.context.resetActiveComponent()
+      }
+     },false)
+  }
   zoomTrigger = (delta)=>{
     this.setState((prevState)=>({scale:{x:prevState.scale.x+delta,y:prevState.scale.y+delta}}))
     this.setState((prevState)=>({position:{x:prevState.position.x-(delta*430),y:prevState.position.y-(delta*330)}}))
@@ -228,7 +229,6 @@ class Main extends Component {
   };
 
   editTextBox = (evt,key) => {
-    console.log(evt,)
     this.context.setActiveComponent(key)
     document.getElementById(key).focus();
     this.context.onTextColorChange(key)
@@ -340,3 +340,9 @@ class Main extends Component {
 Main.contextType = MyContext;
 
 export default withStyles (styles) (Main);
+// export default withStyles (styles)(props => ( <MyContext.Consumer>
+//   {({context}) => {
+//      return <Main {...props} context={context}/>
+//   }}
+// </MyContext.Consumer> ))
+
