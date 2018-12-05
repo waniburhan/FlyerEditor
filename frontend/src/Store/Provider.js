@@ -4,6 +4,8 @@ export const MyContext = React.createContext();
 
 export default class Provider extends Component {
   state = {
+    stageWidth :(window.innerWidth - 398),
+    stageHeight : (window.innerHeight - 112),
     selectColor: '',
     textLayers: [
       "textn",

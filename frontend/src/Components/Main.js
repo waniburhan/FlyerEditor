@@ -93,7 +93,6 @@ class Main extends Component {
     }
     // this.createDynamicRef()
     this.state = {
-        editBox: false,
         image: null,
         textData: [],
         scale: {x:1,y:1},
@@ -133,6 +132,9 @@ class Main extends Component {
   zoomTrigger = (delta)=>{
     this.setState((prevState)=>({scale:{x:prevState.scale.x+delta,y:prevState.scale.y+delta}}))
     this.setState((prevState)=>({position:{x:prevState.position.x-(delta*430),y:prevState.position.y-(delta*330)}}))
+  }
+  handleStageClick = ()=>{
+    // this.context.resetActiveComponent()
   }
   handleStageMouseDown = (e,i) => {
     console.log(e.target.name (),"trans")
@@ -210,8 +212,7 @@ class Main extends Component {
   }
 
   editTextBox = (evt,key) => {
-    console.log(evt,"evttt")
-    this.setState ({editBox: true});
+    console.log(evt,)
     this.context.setActiveComponent(key)
     document.getElementById(key).focus();
     this.context.onTextColorChange(key)
@@ -221,31 +222,23 @@ class Main extends Component {
     items[i] = evt.target.value;
     this.setState ({textData: items});
   };
-  keyPress = e => {
-    if (e.keyCode === 13) {
-      this.setState ({textData: e.target.value});
-      this.setState ({editBox: false});
-    }
-  };
   getXY = (e) =>{
     this.context.onTextXChange(null,e.target.attrs.x)
     this.context.onTextYChange(null,e.target.attrs.y)
   }
   render () {
     const {classes} = this.props;
-    console.log(this.groupnode,"gropu")
     return (
         <MyContext.Consumer>
           {context => {
-            let stageWidth = (window.innerWidth - 398) 
-            let stageHeight= (window.innerHeight - 112)
             return (<React.Fragment>
               <Stage
-              width={stageWidth} 
-              height={stageHeight} 
+              width={context.state.stageWidth} 
+              height={context.state.stageHeight} 
               x={this.state.position.x} 
               y={this.state.position.y} 
               // onMouseDown={this.handleStageMouseDown}  
+              onClick={this.handleStageClick}
               className='container' 
               scaleX={this.state.scale.x} 
               scaleY={this.state.scale.y} 
@@ -256,8 +249,8 @@ class Main extends Component {
                 <Layer>
                   {this.state.rectangles.map ((rect, i) => (
                     <BackgroundObject
-                    stageWidth={stageWidth} 
-                    stageHeight={stageHeight} 
+                    stageWidth={context.state.stageWidth} 
+                    stageHeight={context.state.stageHeight} 
                       key={i}
                       {...rect}
                       src={this.props.selectedBackground}
@@ -302,8 +295,7 @@ class Main extends Component {
               </Stage>
               {context.state.textLayers.map ((key, i) => (
                 <React.Fragment>
-                  {this.state.editBox
-                    ? <input
+                        <input
                         key={i}
                         id={key}
                         className={classes.invisibleInput}
@@ -312,7 +304,6 @@ class Main extends Component {
                         // onKeyDown={(evt,key)=>this.keyPress(evt,key)}
                         value={context.state.textObject[key].textData}
                       />
-                    : ''}
                 </React.Fragment>
               ))}
               <Grid container className={classes.fixedBottom}>
