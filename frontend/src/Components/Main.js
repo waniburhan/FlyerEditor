@@ -131,7 +131,7 @@ class Main extends Component {
   //   let value = '';
   //   value = this.context;
   //   if (value) {
-  //     return value.state.textLayers.map (
+  //     return value.state.layerList.map (
   //       (rect, i) => (this['input_' + i] = React.createRef ())
   //     );
   //     console.log ('calledy');
@@ -144,7 +144,7 @@ class Main extends Component {
   componentDidMount() {
     window.addEventListener("keydown", (e) => {
       if (e.keyCode === 27) {
-        this.context.state.is_active && this.context.resetActiveComponent();
+        this.context.state.activeLayer && this.context.resetActiveComponent();
         this.setState({
           selectedShapeName: ''
         });
@@ -234,6 +234,7 @@ class Main extends Component {
   };
 
   editTextBox = (evt, key) => {
+    console.log(evt,"textevent")
     this.context.setActiveComponent(key)
     document.getElementById(key).focus();
     this.context.onTextColorChange(key)
@@ -293,16 +294,16 @@ class Main extends Component {
                 <Transformer
                   selectedShapeName={this.state.selectedShapeName}
                 />
-                {context.state.textLayers.map((key, i) => {
+                {context.state.layerList.map((key, i) => {
                   const { x, y, ...textProps } = context.state.textObject[key]
-                  const draggable = key === context.state.is_active ? true : false
+                  const draggable = key === context.state.activeLayer ? true : false
                   console.log(draggable, "draggable")
                   return <Group x={x} y={y} draggable={draggable} onDragEnd={this.getXY}>
                     <Rect
                       name={"textRect" + (i + 1)}
                       width={context.state.textObject[key].width}
                       height={context.state.textObject[key].height}
-                      stroke={(context.state.is_active === key) ? "#0fb4bb" : ""}
+                      stroke={(context.state.activeLayer === key) ? "#0fb4bb" : ""}
                     //  onMouseDown={this.handleStageMouseDown}
 
                     //  ref={`textRect+${i}`}
@@ -343,7 +344,7 @@ class Main extends Component {
               </Layer>
 
             </Stage>
-            {context.state.textLayers.map((key, i) => (
+            {context.state.layerList.map((key, i) => (
               <React.Fragment>
                 <input
                   key={i}

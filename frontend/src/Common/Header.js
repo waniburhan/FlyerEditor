@@ -6,6 +6,7 @@ import Button from '@material-ui/core/Button';
 import GetApp from '@material-ui/icons/GetApp';
 import Export from '@material-ui/icons/OpenInBrowser';
 import {MyContext} from '../Store/Provider';
+import Logo from '../Templates/logo.png'
 
 const styles = theme => ({
     appBar: {
@@ -19,6 +20,10 @@ const styles = theme => ({
     },
     button:{
         marginLeft: "auto"
+    },
+    logo:{
+        height: 36,
+        marginLeft: 12
     }
   });
 class Header extends Component {
@@ -38,6 +43,7 @@ class Header extends Component {
             {(context)=>{
             return (<AppBar position="fixed" className={classes.appBar} color="background">
           <Toolbar disableGutters={!this.state.open}>
+          <img className={classes.logo} src={Logo} />
           {this.state.uri?<Button size="small" variant="contained" color="primary" className={classes.button} component="a" href={this.state.uri} download="my-file-name.png"><GetApp/>&nbsp;Download</Button>:
           <Button size="small" variant="contained"  color="primary" className={classes.button} onClick={this.handleExport}><Export/>&nbsp; Make Exportable</Button>}
           </Toolbar>
