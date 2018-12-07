@@ -142,7 +142,7 @@ class Main extends Component {
   //   let value = '';
   //   value = this.context;
   //   if (value) {
-  //     return value.state.textLayers.map (
+  //     return value.state.layerList.map (
   //       (rect, i) => (this['input_' + i] = React.createRef ())
   //     );
   //     console.log ('calledy');

@@ -7,8 +7,10 @@ export default class Provider extends Component {
     stageWidth :(window.innerWidth - 398),
     stageHeight : (window.innerHeight - 112),
     selectColor: '',
-    textLayers: ['textn', 'texty'],
-    is_active: '',
+    templateList:['template1','template2'],
+    layerList: ['textn', 'texty'],
+    activeLayer: '',
+    activeTemplate:'',
     showRect:false,
     showCircle:false,
     showLine:false,
@@ -60,8 +62,7 @@ export default class Provider extends Component {
           y:"",
           src:""
         },
-        LayersList: ['textn', 'texty', 'texto'],
-        layersData: {
+        layerData: {
           textn: {
             fill: 'pink',
             fontSize: 25,
@@ -104,7 +105,7 @@ export default class Provider extends Component {
     // textData: ['hi there', 'hello', 'timbaktu'],
   };
   addField = i => {
-    var active = this.state.is_active;
+    var active = this.state.activeLayer;
     var font = '';
     if (i == 'h1') {
       font = 100;
@@ -133,7 +134,7 @@ export default class Provider extends Component {
 
   }
   onTextChange = evt => {
-    var active = this.state.is_active;
+    var active = this.state.activeLayer;
     let value = evt.target ? evt.target.value : '';
     this.setState (prevState => ({
       ...prevState,
@@ -150,7 +151,7 @@ export default class Provider extends Component {
     this.setState ({selectColor: i});
   };
   onTextSizeChange = evt => {
-    var active = this.state.is_active;
+    var active = this.state.activeLayer;
     let value = evt.target ? Number (evt.target.value) : '';
     this.setState (prevState => ({
       ...prevState,
@@ -164,7 +165,7 @@ export default class Provider extends Component {
     }));
   };
   onTextWidthChange = evt => {
-    var active = this.state.is_active;
+    var active = this.state.activeLayer;
     let value = evt.target ? Number (evt.target.value) : '';
     this.setState (prevState => ({
       ...prevState,
@@ -178,7 +179,7 @@ export default class Provider extends Component {
     }));
   };
   onTextHeightChange = evt => {
-    var active = this.state.is_active;
+    var active = this.state.activeLayer;
     let value = evt.target ? Number (evt.target.value) : '';
     this.setState (prevState => ({
       ...prevState,
@@ -192,7 +193,7 @@ export default class Provider extends Component {
     }));
   };
   onTextVariantChange = (evt, variant) => {
-    var active = this.state.is_active;
+    var active = this.state.activeLayer;
     let value = evt.target ? evt.target.value : '';
     this.setState (prevState => ({
       ...prevState,
@@ -206,7 +207,7 @@ export default class Provider extends Component {
     }));
   };
   onTextAligmnentChange = evt => {
-    var active = this.state.is_active;
+    var active = this.state.activeLayer;
     let value = evt.target ? evt.target.value : '';
     this.setState (prevState => ({
       ...prevState,
@@ -226,7 +227,7 @@ export default class Provider extends Component {
     this.setState ({text: items});
   };
   onTextXChange = (evt, dragdata) => {
-    var active = this.state.is_active;
+    var active = this.state.activeLayer;
     let value = evt ? (evt.target ? Number (evt.target.value) : '') : dragdata;
     this.setState (prevState => ({
       ...prevState,
@@ -240,7 +241,7 @@ export default class Provider extends Component {
     }));
   };
   onTextYChange = (evt, dragdata) => {
-    var active = this.state.is_active;
+    var active = this.state.activeLayer;
     let value = evt ? (evt.target ? Number (evt.target.value) : '') : dragdata;
     this.setState (prevState => ({
       ...prevState,
@@ -254,10 +255,10 @@ export default class Provider extends Component {
     }));
   };
   setActiveComponent = key => {
-    this.setState ({is_active: key});
+    this.setState ({activeLayer: key});
   };
   resetActiveComponent = () => {
-    this.setState ({is_active: ''});
+    this.setState ({activeLayer: ''});
   };
   render () {
     return (

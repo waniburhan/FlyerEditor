@@ -64,7 +64,7 @@ class TextTool extends Component {
     return (
       <MyContext.Consumer>
         {context => {
-         let activeTextbox = context.state.is_active
+         let activeTextbox = context.state.activeLayer
          console.log(context)
          return <div style={{width: '100%'}}>
          {activeTextbox?<React.Fragment>
