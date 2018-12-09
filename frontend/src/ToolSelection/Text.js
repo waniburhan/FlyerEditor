@@ -60,14 +60,14 @@ class TextTool extends Component {
   // };
 
   render () {
-    const {classes} = this.props;
-    return (
-      <MyContext.Consumer>
-        {context => {
-         let activeTextbox = context.state.activeLayer
-         console.log(context)
-         return <div style={{width: '100%'}}>
-         {activeTextbox?<React.Fragment>
+    const {classes,context} = this.props;
+    const contextState = context.state
+    const activeTemplate = contextState.activeTemplate
+    const activeComponent = contextState.activeLayer
+    const textState = contextState.templates[activeTemplate].layerData[activeComponent]
+    console.log(textState,"textState")
+    return (<div style={{width: '100%'}}>
+         {activeComponent?<React.Fragment>
             <ListItem button key={'1'}>
               <ListItemText primary={'Text Colors'} />
             </ListItem>
@@ -144,7 +144,7 @@ class TextTool extends Component {
           type="number"
           name="XText"
           onChange = {context.onTextXChange}
-          value = {context.state.textObject[activeTextbox].x}
+          value = {textState.x}
           className={classNames(classes.margin, classes.textField)}
           InputProps={{
             endAdornment: <InputAdornment position="start">Px</InputAdornment>,
@@ -156,7 +156,7 @@ class TextTool extends Component {
           name="YText"
           type="number"
           onChange = {context.onTextYChange}
-          value = {context.state.textObject[activeTextbox].y}
+          value = {textState.y}
           className={classNames(classes.margin, classes.textField)}
           InputProps={{
             endAdornment: <InputAdornment position="start">Px</InputAdornment>,
@@ -170,7 +170,7 @@ class TextTool extends Component {
           type="number"
           name="widthText"
           onChange = {context.onTextWidthChange}
-          value = {context.state.textObject[activeTextbox].width}
+          value = {textState.width}
           className={classNames(classes.margin, classes.textField)}
           InputProps={{
             endAdornment: <InputAdornment position="start">Px</InputAdornment>,
@@ -182,7 +182,7 @@ class TextTool extends Component {
           name="heightText"
           type="number"
           onChange = {context.onTextHeightChange}
-          value = {context.state.textObject[activeTextbox].height}
+          value = {textState.height}
           className={classNames(classes.margin, classes.textField)}
           InputProps={{
             endAdornment: <InputAdornment position="start">Px</InputAdornment>,
@@ -196,7 +196,7 @@ class TextTool extends Component {
           type="number"
           name="fontSize"
           onChange = {context.onTextSizeChange}
-          value = {context.state.textObject[activeTextbox].fontSize}
+          value = {textState.fontSize}
           className={classNames(classes.margin, classes.textField)}
           InputProps={{
             endAdornment: <InputAdornment position="start">Px</InputAdornment>,
@@ -207,7 +207,7 @@ class TextTool extends Component {
             Align
           </InputLabel>
           <Select
-            value={context.state.textObject[activeTextbox].align}
+            value={textState.align}
             onChange={context.onTextAligmnentChange}            
             input={<Input name="align" id="align-label-placeholder" />}
             className={classes.selectEmpty}
@@ -226,7 +226,7 @@ class TextTool extends Component {
             Font Family
           </InputLabel>
           <Select
-            value={context.state.textObject[activeTextbox].fontFamily}
+            value={textState.fontFamily}
             onChange={context.onTextVariantChange}            
             input={<Input name="fontFamily" id="family-label-placeholder" />}
             className={classes.selectEmpty}
@@ -243,8 +243,6 @@ class TextTool extends Component {
         </FormControl>
         </React.Fragment>:<Typography variant="subtitle1">Please select the text box</Typography>}
           </div>
-        }}
-      </MyContext.Consumer>
     );
   }
 }

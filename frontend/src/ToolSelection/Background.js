@@ -35,24 +35,24 @@ class Background extends React.Component {
   state = {};
 
   render() {
-    const { classes } = this.props;
-
+    const { classes,context} = this.props;
+    const contextState = context.state 
     return (
       <div className={classes.root}>
           {
-            (imgData.map((data, index) => 
+            (contextState.templateList.map((data, index) => 
             <GridList key={index} className={classes.gridList} cols={1} component={ButtonBase}>
               <GridListTile
                 key={index}
-                onClick={() => this.props.templateChange(data.src)}
+                onClick={() => context.setActiveTemplate(data)}
               >
                   <img
                     style={{ width: "100%" }}
-                    src={data.src}
-                    alt={data.title}
+                    src={contextState.templates[data].background.src}
+                    alt={contextState.templates[data].title}
                   />
                   <GridListTileBar
-                  title={data.title}
+                  title={contextState.templates[data].title}
                   classes={{
                     root: classes.titleBar,
                     title: classes.title

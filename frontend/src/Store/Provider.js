@@ -1,25 +1,28 @@
-import React, {Suspense, Component} from 'react';
+import React, { Suspense, Component } from 'react';
+import Diamond from '../Templates/template1.jpg';
+import FlyerThree from "../Templates/Flyer_Letter-03.jpg"
+import FlyerSix from "../Templates/Flyer_Letter-06.jpg"
 
-export const MyContext = React.createContext ();
+export const MyContext = React.createContext();
 
 export default class Provider extends Component {
   state = {
-    stageWidth :(window.innerWidth - 398),
-    stageHeight : (window.innerHeight - 112),
+    stageWidth: (window.innerWidth - 398),
+    stageHeight: (window.innerHeight - 112),
     selectColor: '',
-    templateList:['template1','template2'],
+    templateList: ['template1', 'template2'],
     layerList: ['textn', 'texty'],
     activeLayer: '',
-    activeTemplate:'',
-    showRect:false,
-    showCircle:false,
-    showLine:false,
+    activeTemplate: '',
+    showRect: false,
+    showCircle: false,
+    showLine: false,
     textObject: {
       textn: {
         fill: 'pink',
         fontSize: 27,
         fontFamily: 'arial',
-        fontStyle:"bold",
+        fontStyle: "bold",
         name: 'text',
         align: 'left',
         textData: 'IS YOUR TYPE 2 DIABETES MELLITUS UNCONTROLLED DESPITE TAKING METFORMIN',
@@ -54,13 +57,108 @@ export default class Provider extends Component {
       // },
     },
 
-    template: {
+    templates: {
       template1: {
         name: 'untitiled 1',
-        background:{
-          x:"",
-          y:"",
-          src:""
+        title: "Diamond",
+        background: {
+          x: "",
+          y: "",
+          src: Diamond
+        },
+        layerData: {
+          textn: {
+            fill: 'pink',
+            fontSize: 25,
+            fontFamily: 'arial',
+            name: 'text',
+            align: 'left',
+            textData: 'IS YOUR TYPE 2 DIABETES MELLITUS UNCONTROLLED DESPITE TAKING METFORMIN',
+            x: 250,
+            y: 20,
+            width: 370,
+            height: 77,
+          },
+          texty: {
+            fill: 'green',
+            fontSize: 8,
+            fontFamily: 'roboto',
+            name: 'texty',
+            align: 'left',
+            textData: 'Over 10 million people in the US have a neurodegenrative condition',
+            x: 250,
+            y: 107,
+            width: 364,
+            height: 50,
+          },
+          texto: {
+            fill: 'orange',
+            fontSize: 15,
+            fontFamily: 'helvetica neue',
+            name: 'texto',
+            align: 'right',
+            textData: 'Blessed i am',
+            x: 400,
+            y: 700,
+            width: 500,
+            height: 200,
+          },
+        },
+      },
+      template2: {
+        name: 'untitiled 2',
+        title: "flyer two",
+        background: {
+          x: "",
+          y: "",
+          src: FlyerThree
+        },
+        layerData: {
+          textn: {
+            fill: 'pink',
+            fontSize: 25,
+            fontFamily: 'arial',
+            name: 'text',
+            align: 'left',
+            textData: 'IS YOUR TYPE 2 DIABETES MELLITUS UNCONTROLLED DESPITE TAKING METFORMIN',
+            x: 250,
+            y: 20,
+            width: 370,
+            height: 77,
+          },
+          texty: {
+            fill: 'green',
+            fontSize: 8,
+            fontFamily: 'roboto',
+            name: 'texty',
+            align: 'left',
+            textData: 'Over 10 million people in the US have a neurodegenrative condition',
+            x: 250,
+            y: 107,
+            width: 364,
+            height: 50,
+          },
+          texto: {
+            fill: 'orange',
+            fontSize: 15,
+            fontFamily: 'helvetica neue',
+            name: 'texto',
+            align: 'right',
+            textData: 'Blessed i am',
+            x: 400,
+            y: 700,
+            width: 500,
+            height: 200,
+          },
+        },
+      },
+      template3: {
+        name: 'untitiled 3',
+        title: "flyer six",
+        background: {
+          x: "",
+          y: "",
+          src: FlyerSix
         },
         layerData: {
           textn: {
@@ -104,6 +202,26 @@ export default class Provider extends Component {
     },
     // textData: ['hi there', 'hello', 'timbaktu'],
   };
+
+  textLayerState = (prevState,key,value)=>{
+    var activeTemplate = this.state.activeTemplate
+    var activeLayer = this.state.activeLayer;
+   return {
+    templates: {
+      ...prevState.templates,
+      [activeTemplate]: {
+        ...prevState.templates[activeTemplate],
+        layerData: {
+          ...prevState.templates[activeTemplate].layerData,
+          [activeLayer]: {
+            ...prevState.templates[activeTemplate].layerData[activeLayer],
+            [key]: value,
+          },
+        },
+      }
+    }
+  }
+}
   addField = i => {
     var active = this.state.activeLayer;
     var font = '';
@@ -118,7 +236,7 @@ export default class Provider extends Component {
     } else {
       font = 30;
     }
-    this.setState (prevState => ({
+    this.setState(prevState => ({
       ...prevState,
       textObject: {
         ...prevState.textObject,
@@ -129,138 +247,82 @@ export default class Provider extends Component {
       },
     }));
   };
-  onShapeChange = (field,value)=>{
-    this.setState({[field]:!this.state[field]})
+  onShapeChange = (field, value) => {
+    this.setState({ [field]: !this.state[field] })
 
   }
+  //done
   onTextChange = evt => {
-    var active = this.state.activeLayer;
     let value = evt.target ? evt.target.value : '';
-    this.setState (prevState => ({
-      ...prevState,
-      textObject: {
-        ...prevState.textObject,
-        [active]: {
-          ...prevState.textObject[active],
-          textData: value,
-        },
-      },
-    }));
+    this.setState(prevState => (
+      this.textLayerState(prevState,"textData",value)
+    ));
   };
   onTextColorChange = i => {
-    this.setState ({selectColor: i});
+    this.setState({ selectColor: i });
   };
   onTextSizeChange = evt => {
-    var active = this.state.activeLayer;
-    let value = evt.target ? Number (evt.target.value) : '';
-    this.setState (prevState => ({
-      ...prevState,
-      textObject: {
-        ...prevState.textObject,
-        [active]: {
-          ...prevState.textObject[active],
-          fontSize: value,
-        },
-      },
-    }));
+    let value = evt.target ? Number(evt.target.value) : '';
+    this.setState(prevState => (
+      this.textLayerState(prevState,"fontSize",value)
+    ));
   };
   onTextWidthChange = evt => {
-    var active = this.state.activeLayer;
-    let value = evt.target ? Number (evt.target.value) : '';
-    this.setState (prevState => ({
-      ...prevState,
-      textObject: {
-        ...prevState.textObject,
-        [active]: {
-          ...prevState.textObject[active],
-          width: value,
-        },
-      },
-    }));
+    let value = evt.target ? Number(evt.target.value) : '';
+    this.setState(prevState => (
+      this.textLayerState(prevState,"width",value)
+    ));
   };
   onTextHeightChange = evt => {
-    var active = this.state.activeLayer;
-    let value = evt.target ? Number (evt.target.value) : '';
-    this.setState (prevState => ({
-      ...prevState,
-      textObject: {
-        ...prevState.textObject,
-        [active]: {
-          ...prevState.textObject[active],
-          height: value,
-        },
-      },
-    }));
+    let value = evt.target ? Number(evt.target.value) : '';
+    this.setState(prevState => (
+      this.textLayerState(prevState,"height",value)
+    ));
+    
   };
-  onTextVariantChange = (evt, variant) => {
-    var active = this.state.activeLayer;
+  onTextVariantChange = (evt) => {
     let value = evt.target ? evt.target.value : '';
-    this.setState (prevState => ({
-      ...prevState,
-      textObject: {
-        ...prevState.textObject,
-        [active]: {
-          ...prevState.textObject[active],
-          fontFamily: value,
-        },
-      },
-    }));
+    this.setState(prevState => (
+      this.textLayerState(prevState,"fontFamily",value)
+    ));
+
   };
   onTextAligmnentChange = evt => {
-    var active = this.state.activeLayer;
     let value = evt.target ? evt.target.value : '';
-    this.setState (prevState => ({
-      ...prevState,
-      textObject: {
-        ...prevState.textObject,
-        [active]: {
-          ...prevState.textObject[active],
-          align: value,
-        },
-      },
-    }));
+    this.setState(prevState => (
+      this.textLayerState(prevState,"align",value)
+    ));
   };
   Color = color => {
     const items = this.state.textObject;
-    console.log (items, 'asdfghjk');
     items[this.state.selectColor].fill = color;
-    this.setState ({text: items});
+    this.setState({ text: items });
   };
   onTextXChange = (evt, dragdata) => {
-    var active = this.state.activeLayer;
-    let value = evt ? (evt.target ? Number (evt.target.value) : '') : dragdata;
-    this.setState (prevState => ({
-      ...prevState,
-      textObject: {
-        ...prevState.textObject,
-        [active]: {
-          ...prevState.textObject[active],
-          x: value,
-        },
-      },
-    }));
+    let value = evt ? (evt.target ? Number(evt.target.value) : '') : dragdata;
+    this.setState(prevState => (
+      this.textLayerState(prevState,"x",value)
+    ));
   };
   onTextYChange = (evt, dragdata) => {
-    var active = this.state.activeLayer;
-    let value = evt ? (evt.target ? Number (evt.target.value) : '') : dragdata;
-    this.setState (prevState => ({
-      ...prevState,
-      textObject: {
-        ...prevState.textObject,
-        [active]: {
-          ...prevState.textObject[active],
-          y: value,
-        },
-      },
-    }));
+    let value = evt ? (evt.target ? Number(evt.target.value) : '') : dragdata;
+    this.setState(prevState => (
+      this.textLayerState(prevState,"y",value)
+    ));
+  };
+  setActiveTemplate= key => {
+    this.setState({ activeTemplate: key });
+  };
+  resetActiveTemplate = () => {
+    this.setState({ activeTemplate: '' });
   };
   setActiveComponent = key => {
-    this.setState ({activeLayer: key});
+    this.setState({ activeLayer: key });
   };
   resetActiveComponent = () => {
-    this.setState ({activeLayer: ''});
+    this.setState({ activeLayer: '' });
   };
-  render () {
+  render() {
     return (
       <MyContext.Provider
         value={{
@@ -268,6 +330,8 @@ export default class Provider extends Component {
           addField: this.addField,
           setActiveComponent: this.setActiveComponent,
           resetActiveComponent: this.resetActiveComponent,
+          setActiveTemplate: this.setActiveTemplate,
+          resetActiveTemplatet: this.resetActiveTemplate,
           onTextChange: this.onTextChange,
           onTextColorChange: this.onTextColorChange,
           onTextSizeChange: this.onTextSizeChange,
@@ -278,7 +342,7 @@ export default class Provider extends Component {
           onTextHeightChange: this.onTextHeightChange,
           onTextXChange: this.onTextXChange,
           onTextYChange: this.onTextYChange,
-          onShapeChange:this.onShapeChange
+          onShapeChange: this.onShapeChange
         }}
       >
         {this.props.children}

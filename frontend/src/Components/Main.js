@@ -266,11 +266,11 @@ class Main extends Component {
     document.getElementById (key).focus ();
     this.context.onTextColorChange (key);
   };
-  onTextChange = (evt, i) => {
-    const items = this.state.textData.i;
-    items[i] = evt.target.value;
-    this.setState ({textData: items});
-  };
+  // onTextChange = (evt, i) => {
+  //   const items = this.state.textData.i;
+  //   items[i] = evt.target.value;
+  //   this.setState ({textData: items});
+  // };
   getXY = e => {
     this.context.onTextXChange (null, e.target.attrs.x);
     this.context.onTextYChange (null, e.target.attrs.y);
@@ -294,6 +294,9 @@ class Main extends Component {
     return (
       <MyContext.Consumer>
         {context => {
+          const contextState = context.state
+          const activeTemplate = contextState.activeTemplate
+          const activeComponent = contextState.activeLayer
           return (
             <React.Fragment>
               <label
@@ -333,7 +336,7 @@ class Main extends Component {
                       stageHeight={context.state.stageHeight}
                       key={i}
                       {...rect}
-                      src={this.props.selectedBackground}
+                      src={contextState.templates[activeTemplate].background.src}
                     />
                   ))}
                   {context.state.showRect
@@ -362,12 +365,11 @@ class Main extends Component {
                       this.imageNode = node;
                     }}
                   />
-                  {context.state.textLayers.map ((key, i) => {
-                    const {x, y, ...textProps} = context.state.textObject[key];
-                    const draggable = key === context.state.is_active
+                  {context.state.layerList.map ((key, i) => {
+                    const {x, y, ...textProps} = contextState.templates[activeTemplate].layerData[key];
+                    const draggable = key === activeComponent
                       ? true
                       : false;
-                    console.log (draggable, 'draggable');
                     return (
                       <Group
                         x={x}
@@ -377,10 +379,10 @@ class Main extends Component {
                       >
                         <Rect
                           name={'textRect' + (i + 1)}
-                          width={context.state.textObject[key].width}
-                          height={context.state.textObject[key].height}
+                          width={contextState.templates[activeTemplate].layerData[key].width}
+                          height={contextState.templates[activeTemplate].layerData[key].height}
                           stroke={
-                            context.state.is_active === key ? '#0fb4bb' : ''
+                            activeComponent === key ? '#0fb4bb' : ''
                           }
                           //  onMouseDown={this.handleStageMouseDown}
 
@@ -388,12 +390,12 @@ class Main extends Component {
                         />
                         <Text
                           key={i}
-                          width={context.state.textObject[key].textWidth}
-                          height={context.state.textObject[key].textHeight}
+                          width={contextState.templates[activeTemplate].layerData[key].textWidth}
+                          height={contextState.templates[activeTemplate].layerData[key].textHeight}
                           // ref={`text+${i}`}
                           {...textProps}
                           onClick={evt => this.editTextBox (evt, key)}
-                          text={context.state.textObject[key].textData}
+                          text={contextState.templates[activeTemplate].layerData[key].textData}
                           // wrap="char"
                           // align="center"
                           // width={700}
@@ -435,7 +437,7 @@ class Main extends Component {
                 </Layer>
 
               </Stage>
-              {context.state.textLayers.map ((key, i) => (
+              {context.state.layerList.map ((key, i) => (
                 <React.Fragment>
                   <input
                     key={i}
@@ -444,7 +446,7 @@ class Main extends Component {
                     type="text"
                     onChange={context.onTextChange}
                     // onKeyDown={(evt,key)=>this.keyPress(evt,key)}
-                    value={context.state.textObject[key].textData}
+                    value={contextState.templates[activeTemplate].layerData[key].textData}
                   />
                 </React.Fragment>
               ))}
