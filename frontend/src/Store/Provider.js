@@ -10,53 +10,13 @@ export default class Provider extends Component {
     stageWidth: (window.innerWidth - 398),
     stageHeight: (window.innerHeight - 112),
     selectColor: '',
-    templateList: ['template1', 'template2'],
+    templateList: ['template2','template3'],
     layerList: ['textn', 'texty'],
     activeLayer: '',
     activeTemplate: '',
     showRect: false,
     showCircle: false,
     showLine: false,
-    textObject: {
-      textn: {
-        fill: 'pink',
-        fontSize: 27,
-        fontFamily: 'arial',
-        fontStyle: "bold",
-        name: 'text',
-        align: 'left',
-        textData: 'IS YOUR TYPE 2 DIABETES MELLITUS UNCONTROLLED DESPITE TAKING METFORMIN',
-        x: 237,
-        y: 23,
-        width: 396,
-        height: 82,
-      },
-      texty: {
-        fill: 'green',
-        fontSize: 8,
-        fontFamily: 'roboto',
-        name: 'texty',
-        align: 'left',
-        textData: 'Over 10 million people in the US have a neurodegenrative condition Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.',
-        x: 238,
-        y: 113,
-        width: 364,
-        height: 50,
-      },
-      // texto: {
-      //   c: 'orange',
-      //   fontSize: 15,
-      //   fontFamily: 'helvetica neue',
-      //   name: 'texto',
-      //   align: 'right',
-      //   textData: 'Blessed i am',
-      //   x: 400,
-      //   y: 700,
-      //   width: 500,
-      //   height: 200,
-      // },
-    },
-
     templates: {
       template1: {
         name: 'untitiled 1',
@@ -103,6 +63,14 @@ export default class Provider extends Component {
             width: 500,
             height: 200,
           },
+          barcode:{
+            x: 400,
+            y: 700,
+            width: 50,
+            height: 50,
+            name:"barcode",
+            src: 'https://konvajs.github.io/assets/darth-vader.jpg'
+          }
         },
       },
       template2: {
@@ -150,6 +118,14 @@ export default class Provider extends Component {
             width: 500,
             height: 200,
           },
+          barcode:{
+            x: 400,
+            y: 700,
+            width: 50,
+            height: 50,
+            name:"barcode",
+            src: 'https://konvajs.github.io/assets/darth-vader.jpg'
+          }
         },
       },
       template3: {
@@ -197,6 +173,14 @@ export default class Provider extends Component {
             width: 500,
             height: 200,
           },
+          barcode:{
+            x: 400,
+            y: 700,
+            width: 50,
+            height: 50,
+            name:"barcode",
+            src: 'https://konvajs.github.io/assets/darth-vader.jpg'
+          }
         },
       },
     },
@@ -310,6 +294,26 @@ export default class Provider extends Component {
       this.textLayerState(prevState,"y",value)
     ));
   };
+
+getBase64 = file => {
+  var reader = new FileReader ();
+  reader.readAsDataURL (file);
+  reader.onload = () => {
+    // this.state.imgSrc = reader.result;
+    // this.forceUpdateHandler()
+      // this.setState({imgSrc:reader.result})
+      this.setState(prevState => (
+        this.textLayerState(prevState,"src",reader.result)
+      ));
+  };
+
+};
+
+onImageOptionChange = (field, files) => {
+  if (files && files.length > 0) {
+    this.getBase64 (files[0]);
+  }
+};
   setActiveTemplate= key => {
     this.setState({ activeTemplate: key });
   };
@@ -342,7 +346,8 @@ export default class Provider extends Component {
           onTextHeightChange: this.onTextHeightChange,
           onTextXChange: this.onTextXChange,
           onTextYChange: this.onTextYChange,
-          onShapeChange: this.onShapeChange
+          onShapeChange: this.onShapeChange,
+          onImageOptionChange: this.onImageOptionChange
         }}
       >
         {this.props.children}

@@ -5,11 +5,11 @@ import {
   Group,
   Rect,
   Text,
-  Image,
   Circle,
   Line,
 } from 'react-konva';
 import ColoredRect from './Rectangle';
+import CanvasImage from '../Common/images.js';
 import Transformer from './TransformerComponent.js';
 import Backgrounds from '../Common/TemplateData.js';
 import {MyContext} from '../Store/Provider';
@@ -19,54 +19,6 @@ import IconButton from '@material-ui/core/IconButton';
 import ZoomIn from '@material-ui/icons/ZoomIn';
 import ZoomOut from '@material-ui/icons/ZoomOut';
 import Range from '../Common/Slider.js';
-
-class BackgroundObject extends React.Component {
-  state = {
-    image: null,
-    width: '',
-    height: '',
-  };
-
-  componentDidMount () {
-    const image = new window.Image ();
-    image.src = this.props.src;
-    image.onload = () => {
-      // setState will redraw layer
-      // because "image" property is changed
-      this.setState ({width: image.width, height: image.height});
-      this.setState ({
-        image: image,
-      });
-    };
-  }
-  componentWillReceiveProps (props) {
-    const image = new window.Image ();
-    image.src = props.src;
-    image.onload = () => {
-      // setState will redraw layer
-      // because "image" property is changed
-      this.setState ({width: image.width, height: image.height});
-      this.setState ({
-        image: image,
-      });
-    };
-  }
-
-  render () {
-    let aspectRatio = this.state.width / this.state.height;
-    return (
-      <Image
-        x={this.props.stageWidth / 2 - this.props.stageHeight * aspectRatio / 2}
-        y={this.props.stageHeight - this.props.stageHeight}
-        width={this.props.stageHeight * aspectRatio}
-        height={this.props.stageHeight}
-        fill={this.props.fill}
-        name={this.props.name}
-        image={this.state.image}
-      />
-    );
-  }
-}
 
 const styles = theme => ({
   root: {
@@ -107,7 +59,7 @@ class Main extends Component {
     }
     // this.createDynamicRef()
     this.state = {
-      imgSrc: '',
+      imgSrc: 'https://konvajs.github.io/assets/darth-vader.jpg',
       image: null,
       textData: [],
       scale: {x: 1, y: 1},
@@ -134,7 +86,7 @@ class Main extends Component {
         name: 'text1',
       },
       selectedShapeName: '',
-      image: new window.Image (),
+      // image: new window.Image (),
     };
   }
 
@@ -157,7 +109,7 @@ class Main extends Component {
       'keydown',
       e => {
         if (e.keyCode === 27) {
-          this.context.state.is_active && this.context.resetActiveComponent ();
+          this.context.state.activeLayer && this.context.resetActiveComponent();
           this.setState ({
             selectedShapeName: '',
           });
@@ -165,13 +117,13 @@ class Main extends Component {
       },
       false
     );
-    this.state.image.src = 'https://konvajs.github.io/assets/darth-vader.jpg';
-    this.state.image.onload = () => {
-      // calling set state here will do nothing
-      // because properties of Konva.Image are not changed
-      // so we need to update layer manually
-      this.imageNode.getLayer ().batchDraw ();
-    };
+    // this.state.image.src = 'https://konvajs.github.io/assets/darth-vader.jpg';
+    // this.state.image.onload = () => {
+    //   // calling set state here will do nothing
+    //   // because properties of Konva.Image are not changed
+    //   // so we need to update layer manually
+    //   this.imageNode.getLayer ().batchDraw ();
+    // };
   }
   zoomTrigger = delta => {
     this.setState (prevState => ({
@@ -260,7 +212,10 @@ class Main extends Component {
     };
     this.setState ({position: newPos});
   };
-
+  hitUploadTrigger = (key) =>{
+    this.context.setActiveComponent(key)
+    this.uploadTrigger.click()
+  }
   editTextBox = (evt, key) => {
     this.context.setActiveComponent (key);
     document.getElementById (key).focus ();
@@ -275,20 +230,7 @@ class Main extends Component {
     this.context.onTextXChange (null, e.target.attrs.x);
     this.context.onTextYChange (null, e.target.attrs.y);
   };
-  getBase64 = file => {
-    var reader = new FileReader ();
-    reader.readAsDataURL (file);
-    reader.onload = () => {
-      this.setState ({imgSrc: reader.result});
-      this.state.image.src = reader.result;
-    };
-  };
 
-  onImageOptionChange = (field, files) => {
-    if (files && files.length > 0) {
-      this.getBase64 (files[0]);
-    }
-  };
   render () {
     const {classes} = this.props;
     return (
@@ -299,21 +241,14 @@ class Main extends Component {
           const activeComponent = contextState.activeLayer
           return (
             <React.Fragment>
-              <label
-                htmlFor={`file-upload`}
-                className="custom-file-upload"
-                style={{fontSize: '11px'}}
-              >
-                <i className="fa fa-cloud-upload" />{' '}
-                Upload Picture
-              </label>
               <input
                 id={`file-upload`}
+                ref={node=>this.uploadTrigger = node}
                 style={{display: 'none'}}
                 type="file"
                 accept="image/*"
                 onChange={({target}) =>
-                  this.onImageOptionChange ('select', target.files)}
+                  this.context.onImageOptionChange ('select', target.files)}
               />
               <Stage
                 width={context.state.stageWidth}
@@ -331,12 +266,15 @@ class Main extends Component {
               >
                 <Layer>
                   {this.state.rectangles.map ((rect, i) => (
-                    <BackgroundObject
+                    <CanvasImage
                       stageWidth={context.state.stageWidth}
                       stageHeight={context.state.stageHeight}
+                      name="background"
                       key={i}
                       {...rect}
                       src={contextState.templates[activeTemplate].background.src}
+                      draggable={false}
+                      isBackground = {true}
                     />
                   ))}
                   {context.state.showRect
@@ -355,15 +293,13 @@ class Main extends Component {
                   <Transformer
                     selectedShapeName={this.state.selectedShapeName}
                   />
-                  <Image
-                    image={this.state.image}
-                    draggable
-                    width={50}
-                    height={50}
-                    y={250}
-                    ref={node => {
-                      this.imageNode = node;
-                    }}
+                  <CanvasImage
+                  {...contextState.templates[activeTemplate].layerData.barcode}
+                    draggable={false}
+                    onMouseDown = {()=>this.hitUploadTrigger(contextState.templates[activeTemplate].layerData.barcode.name)}
+                    stroke={
+                      activeComponent === contextState.templates[activeTemplate].layerData.barcode.name ? '#0fb4bb' : ''
+                    }
                   />
                   {context.state.layerList.map ((key, i) => {
                     const {x, y, ...textProps} = contextState.templates[activeTemplate].layerData[key];
