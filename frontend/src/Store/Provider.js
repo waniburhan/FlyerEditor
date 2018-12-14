@@ -23,8 +23,11 @@ export default class Provider extends Component {
         title: "Diamond",
         background: {
           x: "",
-          y: "",
-          src: Diamond
+          y: 0,
+          height:"",
+          width:"",
+          src: Diamond,
+          aspectRatio: ""
         },
         layerData: {
           textn: {
@@ -78,21 +81,24 @@ export default class Provider extends Component {
         title: "flyer two",
         background: {
           x: "",
-          y: "",
-          src: FlyerThree
+          y: 0,
+          height:"",
+          width:"",
+          src: FlyerThree,
+          aspectRatio: ""
         },
         layerData: {
           textn: {
             fill: 'pink',
-            fontSize: 25,
-            fontFamily: 'arial',
+            fontSize: 60,
+            fontFamily: 'helvetica neue',
             name: 'text',
             align: 'left',
             textData: 'IS YOUR TYPE 2 DIABETES MELLITUS UNCONTROLLED DESPITE TAKING METFORMIN',
-            x: 250,
+            x: 50,
             y: 20,
-            width: 370,
-            height: 77,
+            width: 1166,
+            height: 182,
           },
           texty: {
             fill: 'green',
@@ -133,8 +139,11 @@ export default class Provider extends Component {
         title: "flyer six",
         background: {
           x: "",
-          y: "",
-          src: FlyerSix
+          y: 0,
+          height:"",
+          width:"",
+          src: FlyerSix,
+          aspectRatio: ""
         },
         layerData: {
           textn: {
@@ -314,6 +323,94 @@ onImageOptionChange = (field, files) => {
     this.getBase64 (files[0]);
   }
 };
+setBackgroundData = (width,height)=>{
+  console.log("setBackgroundData")
+var activeTemplate = this.state.activeTemplate
+let aspectRatio = width/height
+let backgroundX = this.state.stageWidth / 2 - this.state.stageHeight * aspectRatio / 2
+
+this.setState((prevState)=>  {
+  return {
+    templates: {
+      ...prevState.templates,
+      [activeTemplate]: {
+        ...prevState.templates[activeTemplate],
+        background: {
+          ...prevState.templates[activeTemplate].background,
+          x: backgroundX
+        },
+      }
+    }
+  }})
+
+this.setState((prevState)=>  {
+  return {
+    templates: {
+      ...prevState.templates,
+      [activeTemplate]: {
+        ...prevState.templates[activeTemplate],
+        background: {
+          ...prevState.templates[activeTemplate].background,
+          height: height
+        },
+      }
+    }
+  }})
+
+  this.setState((prevState)=>  {
+    return {
+      templates: {
+        ...prevState.templates,
+        [activeTemplate]: {
+          ...prevState.templates[activeTemplate],
+          background: {
+            ...prevState.templates[activeTemplate].background,
+            width: width
+          },
+        }
+      }
+    }})
+  // Object.keys(myObject).map((key, index) =>{
+  //  return this.setState((prevState)=>  {
+  //   return {
+  //     templates: {
+  //       ...prevState.templates,
+  //       [activeTemplate]: {
+  //         ...prevState.templates[activeTemplate],
+  //         layerData: {
+  //           ...prevState.templates[activeTemplate].layerData,
+  //           [key]: {
+  //             ...prevState.templates[activeTemplate].layerData[key],
+  //             x: prevState.templates[activeTemplate].layerData[key].x + backgroundX,
+  //           },
+  //         },
+  //       }
+  //     }
+  //   }})})
+
+
+this.setState((prevState)=>  {
+  return {
+    templates: {
+      ...prevState.templates,
+      [activeTemplate]: {
+        ...prevState.templates[activeTemplate],
+        background: {
+          ...prevState.templates[activeTemplate].background,
+          aspectRatio: aspectRatio
+        },
+      }
+    }
+  }})
+}
+ fitToScreen = (zoomTrigger)=>{
+  var stageHeight = this.state.stageHeight
+  var activeTemplate = this.state.activeTemplate
+  var bgImageHeight = this.state.templates[activeTemplate].background.height
+  var FitToScreenScale = stageHeight/bgImageHeight
+  console.log(FitToScreenScale,stageHeight,bgImageHeight,"FitToScreenScale")
+  zoomTrigger(FitToScreenScale)
+ }
   setActiveTemplate= key => {
     this.setState({ activeTemplate: key });
   };
@@ -332,6 +429,8 @@ onImageOptionChange = (field, files) => {
         value={{
           state: this.state,
           addField: this.addField,
+          fitToScreen: this.fitToScreen,
+          setBackgroundData: this.setBackgroundData,
           setActiveComponent: this.setActiveComponent,
           resetActiveComponent: this.resetActiveComponent,
           setActiveTemplate: this.setActiveTemplate,

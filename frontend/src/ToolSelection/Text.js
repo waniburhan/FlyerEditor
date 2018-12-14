@@ -65,7 +65,7 @@ class TextTool extends Component {
     const activeTemplate = contextState.activeTemplate
     const activeComponent = contextState.activeLayer
     const textState = contextState.templates[activeTemplate].layerData[activeComponent]
-    console.log(textState,"textState")
+    // const Xorigin = contextState.templates[activeTemplate].background.x
     return (<div style={{width: '100%'}}>
          {activeComponent?<React.Fragment>
             <ListItem button key={'1'}>

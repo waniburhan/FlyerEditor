@@ -64,16 +64,6 @@ class Main extends Component {
       textData: [],
       scale: {x: 1, y: 1},
       position: {x: 0, y: 0},
-      rectangles: [
-        {
-          x: 10,
-          y: 10,
-          width: 721,
-          height: 1081,
-          fill: 'black',
-          name: 'rect1',
-        },
-      ],
       text: {
         stroke: 'red',
         fontSize: '100',
@@ -125,6 +115,7 @@ class Main extends Component {
     //   this.imageNode.getLayer ().batchDraw ();
     // };
   }
+
   zoomTrigger = delta => {
     this.setState (prevState => ({
       scale: {x: prevState.scale.x + delta, y: prevState.scale.y + delta},
@@ -134,6 +125,11 @@ class Main extends Component {
         x: prevState.position.x - delta * 430,
         y: prevState.position.y - delta * 330,
       },
+    }));
+  };
+  fitScreen = zoomScale => {
+    this.setState (prevState => ({
+      scale: {x: prevState.scale.x *zoomScale, y: prevState.scale.y * zoomScale},
     }));
   };
   handleStageClick = () => {
@@ -192,14 +188,14 @@ class Main extends Component {
     //   });
     // }
   };
-  handleWheelZoom = e => {
+  handleWheelZoom = (e,Xorigin) => {
     e.evt.preventDefault ();
     var stage = this.node.getStage ().attrs;
     var scaleBy = 1.01;
     var oldScale = stage.scaleX;
 
     var mousePointTo = {
-      x: (e.evt.x - 398) / oldScale - stage.x / oldScale,
+      x: (e.evt.x - (398+Xorigin)) / oldScale - stage.x / oldScale,
       y: (e.evt.y - 112) / oldScale - stage.y / oldScale,
     };
 
@@ -207,7 +203,7 @@ class Main extends Component {
     this.setState ({scale: {x: newScale, y: newScale}});
 
     var newPos = {
-      x: -(mousePointTo.x - (e.evt.x - 398) / newScale) * newScale,
+      x: -(mousePointTo.x - (e.evt.x - (398+Xorigin)) / newScale) * newScale,
       y: -(mousePointTo.y - (e.evt.y - 112) / newScale) * newScale,
     };
     this.setState ({position: newPos});
@@ -239,6 +235,7 @@ class Main extends Component {
           const contextState = context.state
           const activeTemplate = contextState.activeTemplate
           const activeComponent = contextState.activeLayer
+          const Xorigin = contextState.templates[activeTemplate].background.x
           return (
             <React.Fragment>
               <input
@@ -260,23 +257,22 @@ class Main extends Component {
                 className="container"
                 scaleX={this.state.scale.x}
                 scaleY={this.state.scale.y}
+                offsetX={-Xorigin/this.state.scale.x}
                 ref={node => (this.node = node)}
-                onWheel={this.handleWheelZoom}
+                onWheel={(e) =>this.handleWheelZoom(e,Xorigin)}
                 draggable
               >
                 <Layer>
-                  {this.state.rectangles.map ((rect, i) => (
                     <CanvasImage
                       stageWidth={context.state.stageWidth}
                       stageHeight={context.state.stageHeight}
+                      context={context}
                       name="background"
-                      key={i}
-                      {...rect}
                       src={contextState.templates[activeTemplate].background.src}
                       draggable={false}
                       isBackground = {true}
+                      fitScreen={this.fitScreen}
                     />
-                  ))}
                   {context.state.showRect
                     ? <Rect
                         x={20}
