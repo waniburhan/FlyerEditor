@@ -107,6 +107,7 @@ class Main extends Component {
     }
     // this.createDynamicRef()
     this.state = {
+      opacity:1,
       imgSrc: '',
       image: null,
       textData: [],
@@ -327,15 +328,19 @@ class Main extends Component {
                 draggable
               >
                 <Layer>
-                  {this.state.rectangles.map ((rect, i) => (
+                  
                     <BackgroundObject
                       stageWidth={context.state.stageWidth}
                       stageHeight={context.state.stageHeight}
-                      key={i}
-                      {...rect}
+                        x={10}
+                      y= {10}
+                      width={721}
+                      height= {1081}
+                      fill= 'black'
+                      name='rect1'
                       src={this.props.selectedBackground}
                     />
-                  ))}
+                 
                   {context.state.showRect
                     ? <Rect
                         x={20}
@@ -353,6 +358,9 @@ class Main extends Component {
                     selectedShapeName={this.state.selectedShapeName}
                   />
                   <Image
+                    opacity={this.state.opacity}
+                    onMouseOut={()=>{this.setState({opacity:1})}}
+                    onMouseOver={()=>{this.setState({opacity:0.8})}}
                     image={this.state.image}
                     draggable
                     width={50}
@@ -362,12 +370,11 @@ class Main extends Component {
                       this.imageNode = node;
                     }}
                   />
-                  {context.state.textLayers.map ((key, i) => {
+                  {context.state.layerList.map ((key, i) => {
                     const {x, y, ...textProps} = context.state.textObject[key];
                     const draggable = key === context.state.is_active
                       ? true
                       : false;
-                    console.log (draggable, 'draggable');
                     return (
                       <Group
                         x={x}
@@ -435,7 +442,7 @@ class Main extends Component {
                 </Layer>
 
               </Stage>
-              {context.state.textLayers.map ((key, i) => (
+              {context.state.layerList.map ((key, i) => (
                 <React.Fragment>
                   <input
                     key={i}

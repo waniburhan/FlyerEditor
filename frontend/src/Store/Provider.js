@@ -4,6 +4,7 @@ export const MyContext = React.createContext ();
 
 export default class Provider extends Component {
   state = {
+    fileName:"IconnectFlyer.png",
     stageWidth :(window.innerWidth - 398),
     stageHeight : (window.innerHeight - 112),
     selectColor: '',
@@ -147,6 +148,9 @@ export default class Provider extends Component {
       },
     }));
   };
+  onFlyerNameChange = (evt) =>{
+    this.setState({fileName:evt.target.value})
+  }
   onTextColorChange = i => {
     this.setState ({selectColor: i});
   };
@@ -278,7 +282,8 @@ export default class Provider extends Component {
           onTextHeightChange: this.onTextHeightChange,
           onTextXChange: this.onTextXChange,
           onTextYChange: this.onTextYChange,
-          onShapeChange:this.onShapeChange
+          onShapeChange:this.onShapeChange,
+          onFlyerNameChange:this.onFlyerNameChange
         }}
       >
         {this.props.children}
