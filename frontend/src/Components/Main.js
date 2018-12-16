@@ -1,15 +1,7 @@
 import React, {Component} from 'react';
-import {
-  Stage,
-  Layer,
-  Group,
-  Rect,
-  Text,
-  Image,
-  Circle,
-  Line,
-} from 'react-konva';
+import {Stage, Layer, Group, Rect, Text, Circle, Line} from 'react-konva';
 import ColoredRect from './Rectangle';
+import CanvasImage from '../Common/images.js';
 import Transformer from './TransformerComponent.js';
 import Backgrounds from '../Common/TemplateData.js';
 import {MyContext} from '../Store/Provider';
@@ -19,54 +11,6 @@ import IconButton from '@material-ui/core/IconButton';
 import ZoomIn from '@material-ui/icons/ZoomIn';
 import ZoomOut from '@material-ui/icons/ZoomOut';
 import Range from '../Common/Slider.js';
-
-class BackgroundObject extends React.Component {
-  state = {
-    image: null,
-    width: '',
-    height: '',
-  };
-
-  componentDidMount () {
-    const image = new window.Image ();
-    image.src = this.props.src;
-    image.onload = () => {
-      // setState will redraw layer
-      // because "image" property is changed
-      this.setState ({width: image.width, height: image.height});
-      this.setState ({
-        image: image,
-      });
-    };
-  }
-  componentWillReceiveProps (props) {
-    const image = new window.Image ();
-    image.src = props.src;
-    image.onload = () => {
-      // setState will redraw layer
-      // because "image" property is changed
-      this.setState ({width: image.width, height: image.height});
-      this.setState ({
-        image: image,
-      });
-    };
-  }
-
-  render () {
-    let aspectRatio = this.state.width / this.state.height;
-    return (
-      <Image
-        x={this.props.stageWidth / 2 - this.props.stageHeight * aspectRatio / 2}
-        y={this.props.stageHeight - this.props.stageHeight}
-        width={this.props.stageHeight * aspectRatio}
-        height={this.props.stageHeight}
-        fill={this.props.fill}
-        name={this.props.name}
-        image={this.state.image}
-      />
-    );
-  }
-}
 
 const styles = theme => ({
   root: {
@@ -107,22 +51,12 @@ class Main extends Component {
     }
     // this.createDynamicRef()
     this.state = {
-      opacity:1,
+      opacity: 1,
       imgSrc: '',
       image: null,
       textData: [],
       scale: {x: 1, y: 1},
       position: {x: 0, y: 0},
-      rectangles: [
-        {
-          x: 10,
-          y: 10,
-          width: 721,
-          height: 1081,
-          fill: 'black',
-          name: 'rect1',
-        },
-      ],
       text: {
         stroke: 'red',
         fontSize: '100',
@@ -135,7 +69,7 @@ class Main extends Component {
         name: 'text1',
       },
       selectedShapeName: '',
-      image: new window.Image (),
+      // image: new window.Image (),
     };
   }
 
@@ -158,7 +92,8 @@ class Main extends Component {
       'keydown',
       e => {
         if (e.keyCode === 27) {
-          this.context.state.is_active && this.context.resetActiveComponent ();
+          this.context.state.activeLayer &&
+            this.context.resetActiveComponent ();
           this.setState ({
             selectedShapeName: '',
           });
@@ -166,14 +101,15 @@ class Main extends Component {
       },
       false
     );
-    this.state.image.src = 'https://konvajs.github.io/assets/darth-vader.jpg';
-    this.state.image.onload = () => {
-      // calling set state here will do nothing
-      // because properties of Konva.Image are not changed
-      // so we need to update layer manually
-      this.imageNode.getLayer ().batchDraw ();
-    };
+    // this.state.image.src = 'https://konvajs.github.io/assets/darth-vader.jpg';
+    // this.state.image.onload = () => {
+    //   // calling set state here will do nothing
+    //   // because properties of Konva.Image are not changed
+    //   // so we need to update layer manually
+    //   this.imageNode.getLayer ().batchDraw ();
+    // };
   }
+
   zoomTrigger = delta => {
     this.setState (prevState => ({
       scale: {x: prevState.scale.x + delta, y: prevState.scale.y + delta},
@@ -182,6 +118,14 @@ class Main extends Component {
       position: {
         x: prevState.position.x - delta * 430,
         y: prevState.position.y - delta * 330,
+      },
+    }));
+  };
+  fitScreen = zoomScale => {
+    this.setState (prevState => ({
+      scale: {
+        x: prevState.scale.x * zoomScale,
+        y: prevState.scale.y * zoomScale,
       },
     }));
   };
@@ -241,14 +185,14 @@ class Main extends Component {
     //   });
     // }
   };
-  handleWheelZoom = e => {
+  handleWheelZoom = (e, Xorigin) => {
     e.evt.preventDefault ();
     var stage = this.node.getStage ().attrs;
     var scaleBy = 1.01;
     var oldScale = stage.scaleX;
 
     var mousePointTo = {
-      x: (e.evt.x - 398) / oldScale - stage.x / oldScale,
+      x: (e.evt.x - (398 + Xorigin)) / oldScale - stage.x / oldScale,
       y: (e.evt.y - 112) / oldScale - stage.y / oldScale,
     };
 
@@ -256,62 +200,49 @@ class Main extends Component {
     this.setState ({scale: {x: newScale, y: newScale}});
 
     var newPos = {
-      x: -(mousePointTo.x - (e.evt.x - 398) / newScale) * newScale,
+      x: -(mousePointTo.x - (e.evt.x - (398 + Xorigin)) / newScale) * newScale,
       y: -(mousePointTo.y - (e.evt.y - 112) / newScale) * newScale,
     };
     this.setState ({position: newPos});
   };
-
+  hitUploadTrigger = key => {
+    this.context.setActiveComponent (key);
+    this.uploadTrigger.click ();
+  };
   editTextBox = (evt, key) => {
     this.context.setActiveComponent (key);
     document.getElementById (key).focus ();
     this.context.onTextColorChange (key);
   };
-  onTextChange = (evt, i) => {
-    const items = this.state.textData.i;
-    items[i] = evt.target.value;
-    this.setState ({textData: items});
-  };
+  // onTextChange = (evt, i) => {
+  //   const items = this.state.textData.i;
+  //   items[i] = evt.target.value;
+  //   this.setState ({textData: items});
+  // };
   getXY = e => {
     this.context.onTextXChange (null, e.target.attrs.x);
     this.context.onTextYChange (null, e.target.attrs.y);
   };
-  getBase64 = file => {
-    var reader = new FileReader ();
-    reader.readAsDataURL (file);
-    reader.onload = () => {
-      this.setState ({imgSrc: reader.result});
-      this.state.image.src = reader.result;
-    };
-  };
 
-  onImageOptionChange = (field, files) => {
-    if (files && files.length > 0) {
-      this.getBase64 (files[0]);
-    }
-  };
   render () {
     const {classes} = this.props;
     return (
       <MyContext.Consumer>
         {context => {
+          const contextState = context.state;
+          const activeTemplate = contextState.activeTemplate;
+          const activeComponent = contextState.activeLayer;
+          const Xorigin = contextState.templates[activeTemplate].background.x;
           return (
             <React.Fragment>
-              <label
-                htmlFor={`file-upload`}
-                className="custom-file-upload"
-                style={{fontSize: '11px'}}
-              >
-                <i className="fa fa-cloud-upload" />{' '}
-                Upload Picture
-              </label>
               <input
                 id={`file-upload`}
+                ref={node => (this.uploadTrigger = node)}
                 style={{display: 'none'}}
                 type="file"
                 accept="image/*"
                 onChange={({target}) =>
-                  this.onImageOptionChange ('select', target.files)}
+                  this.context.onImageOptionChange ('select', target.files)}
               />
               <Stage
                 width={context.state.stageWidth}
@@ -323,24 +254,22 @@ class Main extends Component {
                 className="container"
                 scaleX={this.state.scale.x}
                 scaleY={this.state.scale.y}
+                offsetX={-Xorigin / this.state.scale.x}
                 ref={node => (this.node = node)}
-                onWheel={this.handleWheelZoom}
+                onWheel={e => this.handleWheelZoom (e, Xorigin)}
                 draggable
               >
                 <Layer>
-                  
-                    <BackgroundObject
-                      stageWidth={context.state.stageWidth}
-                      stageHeight={context.state.stageHeight}
-                        x={10}
-                      y= {10}
-                      width={721}
-                      height= {1081}
-                      fill= 'black'
-                      name='rect1'
-                      src={this.props.selectedBackground}
-                    />
-                 
+                  <CanvasImage
+                    stageWidth={context.state.stageWidth}
+                    stageHeight={context.state.stageHeight}
+                    context={context}
+                    name="background"
+                    src={contextState.templates[activeTemplate].background.src}
+                    draggable={false}
+                    isBackground={true}
+                    fitScreen={this.fitScreen}
+                  />
                   {context.state.showRect
                     ? <Rect
                         x={20}
@@ -357,24 +286,35 @@ class Main extends Component {
                   <Transformer
                     selectedShapeName={this.state.selectedShapeName}
                   />
-                  <Image
+                  <CanvasImage
+                    {...contextState.templates[activeTemplate].layerData
+                      .barcode}
                     opacity={this.state.opacity}
-                    onMouseOut={()=>{this.setState({opacity:1})}}
-                    onMouseOver={()=>{this.setState({opacity:0.8})}}
-                    image={this.state.image}
-                    draggable
-                    width={50}
-                    height={50}
-                    y={250}
-                    ref={node => {
-                      this.imageNode = node;
+                    onMouseOut={() => {
+                      this.setState ({opacity: 1});
                     }}
+                    onMouseOver={() => {
+                      this.setState ({opacity: 0.8});
+                    }}
+                    draggable={false}
+                    onMouseDown={() =>
+                      this.hitUploadTrigger (
+                        contextState.templates[activeTemplate].layerData.barcode
+                          .name
+                      )}
+                    stroke={
+                      activeComponent ===
+                        contextState.templates[activeTemplate].layerData.barcode
+                          .name
+                        ? '#0fb4bb'
+                        : ''
+                    }
                   />
                   {context.state.layerList.map ((key, i) => {
-                    const {x, y, ...textProps} = context.state.textObject[key];
-                    const draggable = key === context.state.is_active
-                      ? true
-                      : false;
+                    const {x, y, ...textProps} = contextState.templates[
+                      activeTemplate
+                    ].layerData[key];
+                    const draggable = key === activeComponent ? true : false;
                     return (
                       <Group
                         x={x}
@@ -384,23 +324,41 @@ class Main extends Component {
                       >
                         <Rect
                           name={'textRect' + (i + 1)}
-                          width={context.state.textObject[key].width}
-                          height={context.state.textObject[key].height}
-                          stroke={
-                            context.state.is_active === key ? '#0fb4bb' : ''
+                          width={
+                            contextState.templates[activeTemplate].layerData[
+                              key
+                            ].width
                           }
+                          height={
+                            contextState.templates[activeTemplate].layerData[
+                              key
+                            ].height
+                          }
+                          stroke={activeComponent === key ? '#0fb4bb' : ''}
                           //  onMouseDown={this.handleStageMouseDown}
 
                           //  ref={`textRect+${i}`}
                         />
                         <Text
                           key={i}
-                          width={context.state.textObject[key].textWidth}
-                          height={context.state.textObject[key].textHeight}
+                          width={
+                            contextState.templates[activeTemplate].layerData[
+                              key
+                            ].textWidth
+                          }
+                          height={
+                            contextState.templates[activeTemplate].layerData[
+                              key
+                            ].textHeight
+                          }
                           // ref={`text+${i}`}
                           {...textProps}
                           onClick={evt => this.editTextBox (evt, key)}
-                          text={context.state.textObject[key].textData}
+                          text={
+                            contextState.templates[activeTemplate].layerData[
+                              key
+                            ].textData
+                          }
                           // wrap="char"
                           // align="center"
                           // width={700}
@@ -451,7 +409,10 @@ class Main extends Component {
                     type="text"
                     onChange={context.onTextChange}
                     // onKeyDown={(evt,key)=>this.keyPress(evt,key)}
-                    value={context.state.textObject[key].textData}
+                    value={
+                      contextState.templates[activeTemplate].layerData[key]
+                        .textData
+                    }
                   />
                 </React.Fragment>
               ))}

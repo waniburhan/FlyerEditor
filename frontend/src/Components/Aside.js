@@ -2,6 +2,7 @@ import React, {Component,Suspense} from 'react';
 import {withStyles} from '@material-ui/core/styles';
 import Paper from '@material-ui/core/Paper';
 import Shapes from '../ToolSelection/Shapes'
+import {MyContext} from '../Store/Provider';
 const TextTool = React.lazy (() => import ('../ToolSelection/Text'));
 // const FlyerView = React.lazy (() => import ('../FlyerView'));
 const Background = React.lazy (() => import ('../ToolSelection/Background'));
@@ -29,21 +30,20 @@ const styles = theme => ({
 
 class Aside  extends Component {
     render() {
-        const {classes} = this.props
-        console.log("itemlist",this.props.ItemList)
-        return (
-            <Paper className={classes.contentDrawer} elevation={0}>
+        const {classes,context} = this.props
+        
+        return (<Paper className={classes.contentDrawer} elevation={0}>
              <div className={classes.container}>
             <div className={classes.toolbar}></div>
   
                 {this.props.ItemList === 'Template'
                   &&  <Suspense fallback={<div>Loading...</div>}>
-                        <Background templateChange={this.props.templateChange} />
+                        <Background templateChange={this.props.templateChange} context={context}/>
                       </Suspense>
                   }
                 {this.props.ItemList === 'Format'
                   &&  <Suspense fallback={<div>Loading...</div>}>
-                        <TextTool templateChange={this.props.templateChange} />
+                        <TextTool templateChange={this.props.templateChange} context={context}/>
                       </Suspense>}
                       {this.props.ItemList === 'Shapes'
                   &&  

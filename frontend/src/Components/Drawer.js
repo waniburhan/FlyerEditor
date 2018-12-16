@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import {withStyles} from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import MiniSideBar from './MiniSideBar.js';
+import {MyContext} from '../Store/Provider';
 import Typography from '@material-ui/core/Typography';
 import Header from '../Common/Header';
 import Main from './Main.js';
@@ -85,9 +86,7 @@ class MiniDrawer extends React.Component {
     this.setState ({open: false});
   };
 
-  templateChange = src => {
-    this.setState ({imgSrc: src});
-  };
+
   showComponent = text => {
     this.setState ({ItemList: text});
   };
@@ -95,8 +94,12 @@ class MiniDrawer extends React.Component {
     const {classes} = this.props;
 
     return (
+      <MyContext.Consumer>
+      {context=>{
+        let contextState = context.state
+      return(
       <div className={classes.root}>
-        <Header />
+        <Header context={context}/>
         <Drawer
           variant="permanent"
           className={classes.drawer}
@@ -104,19 +107,19 @@ class MiniDrawer extends React.Component {
             paper: classes.customDrawer,
           }}
           open={this.state.open}
+          context={context}
         >
-          <MiniSideBar ItemList={this.state.ItemList} showComponent={this.showComponent} />
+          <MiniSideBar ItemList={this.state.ItemList} showComponent={this.showComponent} context={context}/>
           <Aside
-            templateChange={this.templateChange}
             ItemList={this.state.ItemList}
+            context={context}
           />
         </Drawer>
         <main className={classes.content}>
-          {this.state.imgSrc
-            ? <Main selectedBackground={this.state.imgSrc} zoom={this.state.zoomDelta}/>
-            : ''}
+        {contextState.activeTemplate && <Main zoom={this.state.zoomDelta} context={context}/>}
         </main>
-      </div>
+      </div>)}}
+      </MyContext.Consumer>
     );
   }
 }
