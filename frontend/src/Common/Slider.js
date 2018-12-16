@@ -11,12 +11,12 @@ export default class Range extends Component {
   }
 
   handleOnChange = value => {
-    if (this.state.volume > value) {
+    if (this.props.scale.x > value) {
       this.props.zoomTrigger (-0.2);
       this.setState ({
         val: this.state.val - 0.2,
       });
-    } else if (this.state.volume < value) {
+    } else if (this.props.scale.x < value) {
       this.props.zoomTrigger (+0.2);
       this.setState ({
         val: this.state.val + 0.2,
@@ -33,8 +33,8 @@ export default class Range extends Component {
       <Slider     
         step={0.2}
         min={0}
-        max={1}
-        value={volume}
+        max={20}
+        value={this.props.scale.x}
         orientation="horizontal"
         onChange={this.handleOnChange}
       /></div>

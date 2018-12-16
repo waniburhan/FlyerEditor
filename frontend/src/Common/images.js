@@ -1,56 +1,57 @@
 import React from 'react';
-import {
-    Image,
-  } from 'react-konva';
-
+import {Image} from 'react-konva';
 
 class CanvasImage extends React.Component {
-    state = {
-      image: null,
-      width: '',
-      height: '',
-      src: this.props.src,
-      isBackground: this.props.isBackground,
-      context: this.props.context
+  state = {
+    image: new window.Image (),
+    width: '',
+    height: '',
+    src: '',
+  };
+
+  componentDidMount () {
+    this.state.image.src = this.props.src;
+    this.state.image.onload = () => {
+      // setState will redraw layer
+      // because "image" property is changed
+      this.setState ({
+        width: this.state.image.width,
+        height: this.state.image.height,
+      });
+      this.props.isBackground &&
+        this.props.context.setBackgroundData (
+          this.state.image.width,
+          this.state.image.height
+        );
+      this.props.isBackground &&
+        this.props.context.fitToScreen (this.props.fitScreen);
+      this.setState ({
+        src: this.props.src,
+      });
     };
-  
-    componentDidMount () {
-      const image = new window.Image ();
-      image.src = this.props.src;
-      image.onload = () => {
+  }
+  componentWillReceiveProps (props) {
+    if (props.src !== this.props.src) {
+      this.state.image.src = props.src;
+      this.state.image.onload = () => {
         // setState will redraw layer
         // because "image" property is changed
-        this.setState ({width: image.width, height: image.height});
-        this.props.isBackground && this.props.context.setBackgroundData(image.width,image.height)
-        this.props.isBackground && this.props.context.fitToScreen(this.props.fitScreen)
         this.setState ({
-          image: image,
+          width: this.state.image.width,
+          height: this.state.image.height,
         });
+        props.isBackground &&
+          props.context.setBackgroundData (
+            this.state.image.width,
+            this.state.image.height
+          );
+        this.imageNode.getLayer ().batchDraw ();
       };
     }
-    // componentWillReceiveProps (props) {
-    //   if(props.src !== this.state.src){
-    
-    //     const image = new window.Image ();
-    //     image.src = props.src;
-    //     return  image.onload = () => {
-    //       // setState will redraw layer
-    //       // because "image" property is changed
-    //       // console.log(this.props.src,props.src,"src changed")
-    //       this.state.isBackground && this.state.context.setBackgroundData(image.width,image.height)
-    //       this.state.isBackground && this.state.context.fitToScreen(props.fitScreen)
-    //       return {width: image.width, height: image.height,image: image};
-    //     }
-    //   }
-    //   else{
-    //     return null
-    //   }
-    //     // this.imageNode.getLayer ().batchDraw ();
-    // }
-
+  }
   //   static getDerivedStateFromProps(props, prevState){
   //   //   if(props.src !== prevState.src){
-    
+
   //   //   const image = new window.Image ();
   //   //   image.src = props.src;
   //   //   return  image.onload = () => {
@@ -67,34 +68,32 @@ class CanvasImage extends React.Component {
   //   // }
   //     // this.imageNode.getLayer ().batchDraw ();
   //  }
-  
-    render () {
-      // let aspectRatio = this.state.width / this.state.height;
-      // let backgroundX = this.props.stageWidth / 2 - this.props.stageHeight * aspectRatio / 2
-      // let backgroundY = 0
-      let x = this.props.isBackground?0:this.props.x
-      let y = this.props.isBackground?0:this.props.y
-      // let width = this.props.stageHeight * aspectRatio
-      // let height = this.props.stageHeight
-      return (
-        <Image
-          x={x}
-          y={y}
-          width={this.props.isBackground?this.state.width:this.props.width}
-          height={this.props.isBackground?this.state.height:this.props.height}
-          stroke = {this.props.stroke}
-          name={this.props.name}
-          image={this.state.image}
-          opacity={this.state.opacity}
-          onMouseOut={this.props.onMouseOut}
-          onMouseOver={this.props.onMouseOver}
-          onMouseEnter={this.props.onMouseEnter}
-          onMouseDown={this.props.onMouseDown}
-          draggable = {this.props.draggable}
-          ref={node => this.imageNode = node}
-        />
-      );
-    }
-  }
 
-  export default CanvasImage;
+  render () {
+    // let aspectRatio = this.state.width / this.state.height;
+    // let backgroundX = this.props.stageWidth / 2 - this.props.stageHeight * aspectRatio / 2
+    // let backgroundY = 0
+    let x = this.props.isBackground ? 0 : this.props.x;
+    let y = this.props.isBackground ? 0 : this.props.y;
+    // let width = this.props.stageHeight * aspectRatio
+    // let height = this.props.stageHeight
+    return (
+      <Image
+        x={x}
+        y={y}
+        opacity={this.props.opacity}
+        stroke={this.props.stroke}
+        name={this.props.name}
+        image={this.state.image}
+        onMouseOut={this.props.onMouseOut}
+        onMouseOver={this.props.onMouseOver}
+        onMouseEnter={this.props.onMouseEnter}
+        onMouseDown={this.props.onMouseDown}
+        draggable={this.props.draggable}
+        ref={node => (this.imageNode = node)}
+      />
+    );
+  }
+}
+
+export default CanvasImage;

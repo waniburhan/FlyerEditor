@@ -45,7 +45,6 @@ class Main extends Component {
     this.myInput = React.createRef ();
 
     if (context) {
-      console.log ('poolyeee');
 
       // context.state.textData.map ((rect, i) => (this['input_' + i] = React.createRef ()  ))
     }
@@ -133,7 +132,6 @@ class Main extends Component {
     // this.context.resetActiveComponent()
   };
   handleStageMouseDown = (e, i) => {
-    console.log (e.target.name (), 'trans');
     // clicked on stage - cler selection
     if (e.target === e.target.getStage ()) {
       this.setState ({
@@ -294,7 +292,7 @@ class Main extends Component {
                       this.setState ({opacity: 1});
                     }}
                     onMouseOver={() => {
-                      this.setState ({opacity: 0.8});
+                      this.setState ({opacity: 0.5});
                     }}
                     draggable={false}
                     onMouseDown={() =>
@@ -341,6 +339,8 @@ class Main extends Component {
                         />
                         <Text
                           key={i}
+                          opacity={this.state.opacity}
+
                           width={
                             contextState.templates[activeTemplate].layerData[
                               key
@@ -427,7 +427,7 @@ class Main extends Component {
                 >
                   <ZoomOut />
                 </IconButton>
-                <Range zoomTrigger={this.zoomTrigger} />
+                <Range zoomTrigger={this.zoomTrigger} scale={this.state.scale} />
                 <IconButton
                   size="small"
                   onClick={() => {

@@ -1,17 +1,17 @@
-import React, { Suspense, Component } from 'react';
+import React, {Suspense, Component} from 'react';
 import Diamond from '../Templates/template1.jpg';
-import FlyerThree from "../Templates/Flyer_Letter-03.jpg"
-import FlyerSix from "../Templates/Flyer_Letter-06.jpg"
+import FlyerThree from '../Templates/Flyer_Letter-03.jpg';
+import FlyerSix from '../Templates/Flyer_Letter-06.jpg';
 
-export const MyContext = React.createContext();
+export const MyContext = React.createContext ();
 
 export default class Provider extends Component {
   state = {
-    fileName:"IconnectFlyer.png",
-    stageWidth :(window.innerWidth - 398),
-    stageHeight : (window.innerHeight - 112),
+    fileName: 'IconnectFlyer.png',
+    stageWidth: window.innerWidth - 398,
+    stageHeight: window.innerHeight - 112,
     selectColor: '',
-    templateList: ['template2','template3'],
+    templateList: ['template2', 'template3', 'template1'],
     layerList: ['textn', 'texty'],
     activeLayer: '',
     activeTemplate: '',
@@ -21,14 +21,14 @@ export default class Provider extends Component {
     templates: {
       template1: {
         name: 'untitiled 1',
-        title: "Diamond",
+        title: 'Diamond',
         background: {
-          x: "",
+          x: '',
           y: 0,
-          height:"",
-          width:"",
+          height: '',
+          width: '',
           src: Diamond,
-          aspectRatio: ""
+          aspectRatio: '',
         },
         layerData: {
           textn: {
@@ -67,26 +67,26 @@ export default class Provider extends Component {
             width: 500,
             height: 200,
           },
-          barcode:{
+          barcode: {
             x: 400,
             y: 700,
             width: 50,
             height: 50,
-            name:"barcode",
-            src: 'https://konvajs.github.io/assets/darth-vader.jpg'
-          }
+            name: 'barcode',
+            src: 'https://konvajs.github.io/assets/darth-vader.jpg',
+          },
         },
       },
       template2: {
         name: 'untitiled 2',
-        title: "flyer two",
+        title: 'flyer two',
         background: {
-          x: "",
+          x: '',
           y: 0,
-          height:"",
-          width:"",
+          height: '',
+          width: '',
           src: FlyerThree,
-          aspectRatio: ""
+          aspectRatio: '',
         },
         layerData: {
           textn: {
@@ -125,26 +125,26 @@ export default class Provider extends Component {
             width: 500,
             height: 200,
           },
-          barcode:{
+          barcode: {
             x: 400,
             y: 700,
             width: 50,
             height: 50,
-            name:"barcode",
-            src: 'https://konvajs.github.io/assets/darth-vader.jpg'
-          }
+            name: 'barcode',
+            src: 'https://konvajs.github.io/assets/darth-vader.jpg',
+          },
         },
       },
       template3: {
         name: 'untitiled 3',
-        title: "flyer six",
+        title: 'flyer six',
         background: {
-          x: "",
-          y: 0,
-          height:"",
-          width:"",
           src: FlyerSix,
-          aspectRatio: ""
+          x: '',
+          y: 0,
+          height: '',
+          width: '',
+          aspectRatio: '',
         },
         layerData: {
           textn: {
@@ -183,39 +183,39 @@ export default class Provider extends Component {
             width: 500,
             height: 200,
           },
-          barcode:{
+          barcode: {
             x: 400,
             y: 700,
             width: 50,
             height: 50,
-            name:"barcode",
-            src: 'https://konvajs.github.io/assets/darth-vader.jpg'
-          }
+            name: 'barcode',
+            src: 'https://konvajs.github.io/assets/darth-vader.jpg',
+          },
         },
       },
     },
     // textData: ['hi there', 'hello', 'timbaktu'],
   };
 
-  textLayerState = (prevState,key,value)=>{
-    var activeTemplate = this.state.activeTemplate
+  textLayerState = (prevState, key, value) => {
+    var activeTemplate = this.state.activeTemplate;
     var activeLayer = this.state.activeLayer;
-   return {
-    templates: {
-      ...prevState.templates,
-      [activeTemplate]: {
-        ...prevState.templates[activeTemplate],
-        layerData: {
-          ...prevState.templates[activeTemplate].layerData,
-          [activeLayer]: {
-            ...prevState.templates[activeTemplate].layerData[activeLayer],
-            [key]: value,
+    return {
+      templates: {
+        ...prevState.templates,
+        [activeTemplate]: {
+          ...prevState.templates[activeTemplate],
+          layerData: {
+            ...prevState.templates[activeTemplate].layerData,
+            [activeLayer]: {
+              ...prevState.templates[activeTemplate].layerData[activeLayer],
+              [key]: value,
+            },
           },
         },
-      }
-    }
-  }
-}
+      },
+    };
+  };
   addField = i => {
     var active = this.state.activeLayer;
     var font = '';
@@ -230,7 +230,7 @@ export default class Provider extends Component {
     } else {
       font = 30;
     }
-    this.setState(prevState => ({
+    this.setState (prevState => ({
       ...prevState,
       textObject: {
         ...prevState.textObject,
@@ -242,192 +242,214 @@ export default class Provider extends Component {
     }));
   };
   onShapeChange = (field, value) => {
-    this.setState({ [field]: !this.state[field] })
-
-  }
+    this.setState ({[field]: !this.state[field]});
+  };
   //done
   onTextChange = evt => {
     let value = evt.target ? evt.target.value : '';
-    this.setState(prevState => (
-      this.textLayerState(prevState,"textData",value)
-    ));
+    this.setState (prevState =>
+      this.textLayerState (prevState, 'textData', value)
+    );
   };
-  onFlyerNameChange = (evt) =>{
-    this.setState({fileName:evt.target.value})
-  }
+  onFlyerNameChange = evt => {
+    this.setState ({fileName: evt.target.value});
+  };
   onTextColorChange = i => {
-    this.setState({ selectColor: i });
+    this.setState ({selectColor: i});
   };
   onTextSizeChange = evt => {
-    let value = evt.target ? Number(evt.target.value) : '';
-    this.setState(prevState => (
-      this.textLayerState(prevState,"fontSize",value)
-    ));
+    let value = evt.target ? Number (evt.target.value) : '';
+    this.setState (prevState =>
+      this.textLayerState (prevState, 'fontSize', value)
+    );
   };
   onTextWidthChange = evt => {
-    let value = evt.target ? Number(evt.target.value) : '';
-    this.setState(prevState => (
-      this.textLayerState(prevState,"width",value)
-    ));
+    let value = evt.target ? Number (evt.target.value) : '';
+    this.setState (prevState =>
+      this.textLayerState (prevState, 'width', value)
+    );
   };
   onTextHeightChange = evt => {
-    let value = evt.target ? Number(evt.target.value) : '';
-    this.setState(prevState => (
-      this.textLayerState(prevState,"height",value)
-    ));
-    
+    let value = evt.target ? Number (evt.target.value) : '';
+    this.setState (prevState =>
+      this.textLayerState (prevState, 'height', value)
+    );
   };
-  onTextVariantChange = (evt) => {
+  onTextVariantChange = evt => {
     let value = evt.target ? evt.target.value : '';
-    this.setState(prevState => (
-      this.textLayerState(prevState,"fontFamily",value)
-    ));
-
+    this.setState (prevState =>
+      this.textLayerState (prevState, 'fontFamily', value)
+    );
   };
   onTextAligmnentChange = evt => {
     let value = evt.target ? evt.target.value : '';
-    this.setState(prevState => (
-      this.textLayerState(prevState,"align",value)
-    ));
+    this.setState (prevState =>
+      this.textLayerState (prevState, 'align', value)
+    );
   };
   Color = color => {
-    const items = this.state.textObject;
-    items[this.state.selectColor].fill = color;
-    this.setState({ text: items });
+    // const items = this.state.textObject;
+    // items[this.state.selectColor].fill = color;
+    // this.setState({ text: items });
+    console.log (this.state.templates, 'templates');
+    const {layerList} = this.state.layerList[0];
+    this.setState (prevState => {
+      return {
+        templates: {
+          ...prevState.templates,
+          [this.state.activeTemplate]: {
+            ...prevState.templates[this.state.activeTemplate],
+            layerData: {
+              ...prevState.templates[this.state.activeTemplate].layerData,
+              [this.state.activeLayer]: {
+                ...prevState.templates[this.state.activeTemplate].layerData[
+                  this.state.activeLayer
+                ],
+                fill: color,
+              },
+            },
+          },
+        },
+      };
+    });
   };
   onTextXChange = (evt, dragdata) => {
-    let value = evt ? (evt.target ? Number(evt.target.value) : '') : dragdata;
-    this.setState(prevState => (
-      this.textLayerState(prevState,"x",value)
-    ));
+    let value = evt ? (evt.target ? Number (evt.target.value) : '') : dragdata;
+    this.setState (prevState => this.textLayerState (prevState, 'x', value));
   };
   onTextYChange = (evt, dragdata) => {
-    let value = evt ? (evt.target ? Number(evt.target.value) : '') : dragdata;
-    this.setState(prevState => (
-      this.textLayerState(prevState,"y",value)
-    ));
+    let value = evt ? (evt.target ? Number (evt.target.value) : '') : dragdata;
+    this.setState (prevState => this.textLayerState (prevState, 'y', value));
   };
 
-getBase64 = file => {
-  var reader = new FileReader ();
-  reader.readAsDataURL (file);
-  reader.onload = () => {
-    // this.state.imgSrc = reader.result;
-    // this.forceUpdateHandler()
+  getBase64 = file => {
+    var reader = new FileReader ();
+    reader.readAsDataURL (file);
+    reader.onload = () => {
+      // this.state.imgSrc = reader.result;
+      // this.forceUpdateHandler()
       // this.setState({imgSrc:reader.result})
-      this.setState(prevState => (
-        this.textLayerState(prevState,"src",reader.result)
-      ));
+      this.setState (prevState =>
+        this.textLayerState (prevState, 'src', reader.result)
+      );
+    };
   };
 
-};
-
-onImageOptionChange = (field, files) => {
-  if (files && files.length > 0) {
-    this.getBase64 (files[0]);
-  }
-};
-setBackgroundData = (width,height)=>{
-  console.log("setBackgroundData")
-var activeTemplate = this.state.activeTemplate
-let aspectRatio = width/height
-let backgroundX = this.state.stageWidth / 2 - this.state.stageHeight * aspectRatio / 2
-
-this.setState((prevState)=>  {
-  return {
-    templates: {
-      ...prevState.templates,
-      [activeTemplate]: {
-        ...prevState.templates[activeTemplate],
-        background: {
-          ...prevState.templates[activeTemplate].background,
-          x: backgroundX
-        },
-      }
+  onImageOptionChange = (field, files) => {
+    if (files && files.length > 0) {
+      this.getBase64 (files[0]);
     }
-  }})
+  };
+  setBackgroundData = (width, height) => {
+    console.log (width, 'setBackgroundData', height);
+    var activeTemplate = this.state.activeTemplate;
+    let aspectRatio = width / height;
+    let backgroundX =
+      this.state.stageWidth / 2 - this.state.stageHeight * aspectRatio / 2;
 
-this.setState((prevState)=>  {
-  return {
-    templates: {
-      ...prevState.templates,
-      [activeTemplate]: {
-        ...prevState.templates[activeTemplate],
-        background: {
-          ...prevState.templates[activeTemplate].background,
-          height: height
-        },
-      }
-    }
-  }})
-
-  this.setState((prevState)=>  {
-    return {
-      templates: {
-        ...prevState.templates,
-        [activeTemplate]: {
-          ...prevState.templates[activeTemplate],
-          background: {
-            ...prevState.templates[activeTemplate].background,
-            width: width
+    this.setState (prevState => {
+      return {
+        templates: {
+          ...prevState.templates,
+          [activeTemplate]: {
+            ...prevState.templates[activeTemplate],
+            background: {
+              ...prevState.templates[activeTemplate].background,
+              x: backgroundX,
+            },
           },
-        }
-      }
-    }})
-  // Object.keys(myObject).map((key, index) =>{
-  //  return this.setState((prevState)=>  {
-  //   return {
-  //     templates: {
-  //       ...prevState.templates,
-  //       [activeTemplate]: {
-  //         ...prevState.templates[activeTemplate],
-  //         layerData: {
-  //           ...prevState.templates[activeTemplate].layerData,
-  //           [key]: {
-  //             ...prevState.templates[activeTemplate].layerData[key],
-  //             x: prevState.templates[activeTemplate].layerData[key].x + backgroundX,
-  //           },
-  //         },
-  //       }
-  //     }
-  //   }})})
-
-
-this.setState((prevState)=>  {
-  return {
-    templates: {
-      ...prevState.templates,
-      [activeTemplate]: {
-        ...prevState.templates[activeTemplate],
-        background: {
-          ...prevState.templates[activeTemplate].background,
-          aspectRatio: aspectRatio
         },
-      }
-    }
-  }})
-}
- fitToScreen = (zoomTrigger)=>{
-  var stageHeight = this.state.stageHeight
-  var activeTemplate = this.state.activeTemplate
-  var bgImageHeight = this.state.templates[activeTemplate].background.height
-  var FitToScreenScale = stageHeight/bgImageHeight
-  console.log(FitToScreenScale,stageHeight,bgImageHeight,"FitToScreenScale")
-  zoomTrigger(FitToScreenScale)
- }
-  setActiveTemplate= key => {
-    this.setState({ activeTemplate: key });
+      };
+    });
+
+    this.setState (prevState => {
+      return {
+        templates: {
+          ...prevState.templates,
+          [activeTemplate]: {
+            ...prevState.templates[activeTemplate],
+            background: {
+              ...prevState.templates[activeTemplate].background,
+              height: height,
+            },
+          },
+        },
+      };
+    });
+
+    this.setState (prevState => {
+      return {
+        templates: {
+          ...prevState.templates,
+          [activeTemplate]: {
+            ...prevState.templates[activeTemplate],
+            background: {
+              ...prevState.templates[activeTemplate].background,
+              width: width,
+            },
+          },
+        },
+      };
+    });
+    // Object.keys(myObject).map((key, index) =>{
+    //  return this.setState((prevState)=>  {
+    //   return {
+    //     templates: {
+    //       ...prevState.templates,
+    //       [activeTemplate]: {
+    //         ...prevState.templates[activeTemplate],
+    //         layerData: {
+    //           ...prevState.templates[activeTemplate].layerData,
+    //           [key]: {
+    //             ...prevState.templates[activeTemplate].layerData[key],
+    //             x: prevState.templates[activeTemplate].layerData[key].x + backgroundX,
+    //           },
+    //         },
+    //       }
+    //     }
+    //   }})})
+
+    this.setState (prevState => {
+      return {
+        templates: {
+          ...prevState.templates,
+          [activeTemplate]: {
+            ...prevState.templates[activeTemplate],
+            background: {
+              ...prevState.templates[activeTemplate].background,
+              aspectRatio: aspectRatio,
+            },
+          },
+        },
+      };
+    });
+  };
+  fitToScreen = zoomTrigger => {
+    var stageHeight = this.state.stageHeight;
+    var activeTemplate = this.state.activeTemplate;
+    var bgImageHeight = this.state.templates[activeTemplate].background.height;
+    var FitToScreenScale = stageHeight / bgImageHeight;
+    console.log (
+      FitToScreenScale,
+      stageHeight,
+      bgImageHeight,
+      'FitToScreenScale'
+    );
+    zoomTrigger (FitToScreenScale);
+  };
+  setActiveTemplate = key => {
+    this.setState ({activeTemplate: key});
   };
   resetActiveTemplate = () => {
-    this.setState({ activeTemplate: '' });
+    this.setState ({activeTemplate: ''});
   };
   setActiveComponent = key => {
-    this.setState({ activeLayer: key });
+    this.setState ({activeLayer: key});
   };
   resetActiveComponent = () => {
-    this.setState({ activeLayer: '' });
+    this.setState ({activeLayer: ''});
   };
-  render() {
+  render () {
     return (
       <MyContext.Provider
         value={{
@@ -449,9 +471,9 @@ this.setState((prevState)=>  {
           onTextHeightChange: this.onTextHeightChange,
           onTextXChange: this.onTextXChange,
           onTextYChange: this.onTextYChange,
-          onShapeChange:this.onShapeChange,
-          onFlyerNameChange:this.onFlyerNameChange,
-          onImageOptionChange: this.onImageOptionChange
+          onShapeChange: this.onShapeChange,
+          onFlyerNameChange: this.onFlyerNameChange,
+          onImageOptionChange: this.onImageOptionChange,
         }}
       >
         {this.props.children}
