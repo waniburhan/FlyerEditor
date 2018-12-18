@@ -7,6 +7,7 @@ import Backgrounds from '../Common/TemplateData.js';
 import {MyContext} from '../Store/Provider';
 import {withStyles} from '@material-ui/core/styles';
 import Grid from '@material-ui/core/Grid';
+import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import ZoomIn from '@material-ui/icons/ZoomIn';
 import ZoomOut from '@material-ui/icons/ZoomOut';
@@ -30,13 +31,18 @@ const styles = theme => ({
     position: 'fixed',
     bottom: 0,
     right: 0,
-    width: 'auto',
+    width: 'calc(100% - 350px)',
     backgroundColor: theme.palette.background.paper,
     zIndex: 9999,
-    width: '100%',
+  },
+  fitToScreenButton:{
+   position: "absolute",
+   right: "0.5rem",
+   top:"calc(50% - 16px)"
   },
   range: {
-    marginLeft: '45%',
+   display: "flex",
+   margin: "auto"
   },
 });
 class Main extends Component {
@@ -120,13 +126,32 @@ class Main extends Component {
       },
     }));
   };
-  fitScreen = zoomScale => {
+  zoomScale=(x,y)=>{
+    let delta = x-this.state.scale.x
     this.setState (prevState => ({
-      scale: {
-        x: prevState.scale.x * zoomScale,
-        y: prevState.scale.y * zoomScale,
+      scale: {x: x, y: y},
+      position: {
+        x: prevState.position.x  - delta * 430,
+        y: prevState.position.y - delta * 330,
       },
     }));
+  }
+  fitScreen = zoomScale => {
+    this.setState ({
+      position: {
+        x: 0,
+        y: 0,
+      },
+      scale: {
+        x: 1 * zoomScale,
+        y: 1 * zoomScale,
+      },
+    });
+    // this.node.to({
+    //   scaleX: this.state.scale.x * zoomScale,
+    //   scaleY: this.state.scale.y * zoomScale,
+    //   duration: 0.5
+    // })
   };
   handleStageClick = () => {
     // this.context.resetActiveComponent()
@@ -221,6 +246,12 @@ class Main extends Component {
     this.context.onTextXChange (null, e.target.attrs.x);
     this.context.onTextYChange (null, e.target.attrs.y);
   };
+  handleStageDrag= e =>{
+   this.setState({position:{
+     x: e.currentTarget.attrs.x,
+     y: e.currentTarget.attrs.y
+   }})
+  }
 
   render () {
     const {classes} = this.props;
@@ -254,6 +285,7 @@ class Main extends Component {
                 scaleY={this.state.scale.y}
                 offsetX={-Xorigin / this.state.scale.x}
                 ref={node => (this.node = node)}
+                onDragEnd={this.handleStageDrag}
                 onWheel={e => this.handleWheelZoom (e, Xorigin)}
                 draggable
               >
@@ -417,25 +449,31 @@ class Main extends Component {
                 </React.Fragment>
               ))}
               <Grid container className={classes.fixedBottom}>
-                <IconButton
-                  className={classes.range}
+                <div  className={classes.range}>
+                  <IconButton
                   size="small"
                   color=""
                   onClick={() => {
                     this.zoomTrigger (-0.2);
                   }}
+                  disabled={this.state.scale.x < 0.2}
                 >
                   <ZoomOut />
                 </IconButton>
-                <Range zoomTrigger={this.zoomTrigger} scale={this.state.scale} />
+                <Range zoomScale={this.zoomScale} scale={this.state.scale} />
                 <IconButton
                   size="small"
                   onClick={() => {
                     this.zoomTrigger (0.2);
                   }}
+                  disabled={this.state.scale.x > 4.8}
                 >
                   <ZoomIn />
                 </IconButton>
+                </div>
+                <Button variant="outlined" size="small" onClick={()=>context.fitToScreen(this.fitScreen)} className={classes.fitToScreenButton}>
+                Fit To Screen
+                </Button>
               </Grid>
             </React.Fragment>
           );

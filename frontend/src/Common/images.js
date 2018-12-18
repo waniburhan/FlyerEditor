@@ -23,8 +23,7 @@ class CanvasImage extends React.Component {
           this.state.image.width,
           this.state.image.height
         );
-      this.props.isBackground &&
-        this.props.context.fitToScreen (this.props.fitScreen);
+      this.props.isBackground && this.props.context.fitToScreen (this.props.fitScreen);
       this.setState ({
         src: this.props.src,
       });
@@ -81,6 +80,8 @@ class CanvasImage extends React.Component {
       <Image
         x={x}
         y={y}
+        width={!this.props.isBackground && this.props.width}
+        height={!this.props.isBackground && this.props.height}
         opacity={this.props.opacity}
         stroke={this.props.stroke}
         name={this.props.name}

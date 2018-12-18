@@ -9,7 +9,7 @@ export default class Provider extends Component {
   state = {
     fileName: 'IconnectFlyer.png',
     stageWidth: window.innerWidth - 398,
-    stageHeight: window.innerHeight - 112,
+    stageHeight: window.innerHeight - 160,
     selectColor: '',
     templateList: ['template2', 'template3', 'template1'],
     layerList: ['textn', 'texty'],
@@ -341,7 +341,6 @@ export default class Provider extends Component {
     }
   };
   setBackgroundData = (width, height) => {
-    console.log (width, 'setBackgroundData', height);
     var activeTemplate = this.state.activeTemplate;
     let aspectRatio = width / height;
     let backgroundX =
@@ -356,36 +355,10 @@ export default class Provider extends Component {
             background: {
               ...prevState.templates[activeTemplate].background,
               x: backgroundX,
-            },
-          },
-        },
-      };
-    });
-
-    this.setState (prevState => {
-      return {
-        templates: {
-          ...prevState.templates,
-          [activeTemplate]: {
-            ...prevState.templates[activeTemplate],
-            background: {
-              ...prevState.templates[activeTemplate].background,
-              height: height,
-            },
-          },
-        },
-      };
-    });
-
-    this.setState (prevState => {
-      return {
-        templates: {
-          ...prevState.templates,
-          [activeTemplate]: {
-            ...prevState.templates[activeTemplate],
-            background: {
-              ...prevState.templates[activeTemplate].background,
               width: width,
+              height: height,
+              
+
             },
           },
         },
@@ -429,12 +402,7 @@ export default class Provider extends Component {
     var activeTemplate = this.state.activeTemplate;
     var bgImageHeight = this.state.templates[activeTemplate].background.height;
     var FitToScreenScale = stageHeight / bgImageHeight;
-    console.log (
-      FitToScreenScale,
-      stageHeight,
-      bgImageHeight,
-      'FitToScreenScale'
-    );
+    
     zoomTrigger (FitToScreenScale);
   };
   setActiveTemplate = key => {

@@ -14,8 +14,12 @@ import FormControl from '@material-ui/core/FormControl';
 import Select from '@material-ui/core/Select';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import TextField from '@material-ui/core/TextField';
+import IconButton from '@material-ui/core/IconButton';
 import classNames from 'classnames';
 import {SketchPicker} from 'react-color';
+import Bold from '@material-ui/icons/FormatBold';
+import Italic from '@material-ui/icons/FormatItalic';
+import Underline from '@material-ui/icons/FormatUnderlined';
 import {Typography} from '@material-ui/core';
 const styles = theme => ({
   colors: {
@@ -30,7 +34,7 @@ const styles = theme => ({
     width: 90,
   },
   fullWidth: {
-    width: '100%',
+    width: 'calc(100% - 16px)',
   },
   selectEmpty: {
     marginTop: theme.spacing.unit * 2,
@@ -72,10 +76,9 @@ class TextTool extends Component {
       <div style={{width: '100%'}}>
         {activeComponent
           ? <React.Fragment>
-              <ListItem button key={'1'}>
-                <ListItemText primary={'Text Colors'} />
-              </ListItem>
-              <Divider />
+
+              <Grid container>
+              <Grid item xs={12}>
               <SketchPicker
                 color={this.state.color}
                 onChangeComplete={color => {
@@ -83,9 +86,9 @@ class TextTool extends Component {
                   this.selectedColor (color);
                 }}
               />
-
-              <Grid container>
-                <TextField
+              </Grid>
+              <Grid item xs={6}>
+              <TextField
                   label="X"
                   id="XText"
                   type="number"
@@ -99,6 +102,8 @@ class TextTool extends Component {
                     ),
                   }}
                 />
+              </Grid>
+                <Grid item xs={6}>
                 <TextField
                   label="Y"
                   id="YText"
@@ -113,9 +118,8 @@ class TextTool extends Component {
                     ),
                   }}
                 />
-              </Grid>
-
-              <Grid container>
+                </Grid>
+                <Grid item xs={6}>
                 <TextField
                   label="Width"
                   id="widthText"
@@ -130,6 +134,8 @@ class TextTool extends Component {
                     ),
                   }}
                 />
+                </Grid>
+                <Grid item xs={6}>
                 <TextField
                   label="Height"
                   id="heightText"
@@ -144,9 +150,9 @@ class TextTool extends Component {
                     ),
                   }}
                 />
-              </Grid>
-              <Grid container>
-                <TextField
+                </Grid>
+
+                <Grid item xs={6}><TextField
                   label="Font Size"
                   id="fontSize"
                   type="number"
@@ -159,8 +165,8 @@ class TextTool extends Component {
                       <InputAdornment position="start">Px</InputAdornment>
                     ),
                   }}
-                />
-                <FormControl className={classes.formControl}>
+                /></Grid>
+                <Grid item xs={6}><FormControl className={classes.formControl}>
                   <InputLabel shrink htmlFor="align-label-placeholder">
                     Align
                   </InputLabel>
@@ -177,9 +183,8 @@ class TextTool extends Component {
                     <MenuItem value={'center'}>Center</MenuItem>
                     <MenuItem value={'right'}>Right</MenuItem>
                   </Select>
-                </FormControl>
-              </Grid>
-              <FormControl
+                </FormControl></Grid>
+                <Grid item xs={12}><FormControl
                 className={classes.formControl + ' ' + classes.fullWidth}
               >
                 <InputLabel shrink htmlFor="family-label-placeholder">
@@ -202,7 +207,14 @@ class TextTool extends Component {
                   <MenuItem value={'sans-serif'}>Sans-serif</MenuItem>
 
                 </Select>
-              </FormControl>
+              </FormControl></Grid>
+              <Grid item xs={12}>
+              <IconButton><Bold/></IconButton>
+              <IconButton><Italic/></IconButton>
+              <IconButton><Underline/></IconButton>
+              </Grid>
+                
+              </Grid>
             </React.Fragment>
           : <Typography variant="subtitle1">
               Please select the text box
